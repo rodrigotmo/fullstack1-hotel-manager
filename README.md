@@ -11,6 +11,7 @@ erDiagram
         string cargo
         string telefone
         string email
+        boolean ativo
     }
 
     QUARTO {
@@ -26,6 +27,7 @@ erDiagram
         string documento
         string telefone
         string email
+        boolean ativo
     }
 
     RESERVA {
@@ -36,9 +38,16 @@ erDiagram
         int id_cliente FK
         int id_funcionario FK
         int id_quarto FK
+        int id_status_reserva FK
+    }
+
+    STATUS_RESERVA {
+        int id_status_reserva PK
+        string status_reserva
     }
 
     FUNCIONARIO }|--o{ RESERVA : "gerencia"
     CLIENTE ||--o{ RESERVA : "realiza"
     QUARTO ||--o{ RESERVA : "associado a"
+    STATUS ||--o{ RESERVA : "associado a"
 ```
