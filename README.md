@@ -43,11 +43,11 @@ erDiagram
 
     STATUS_RESERVA {
         int id_status_reserva PK
-        string status_reserva
+        string nome_status_reserva
     }
 
     FUNCIONARIO }|--o{ RESERVA : "gerencia"
     CLIENTE ||--o{ RESERVA : "realiza"
     QUARTO ||--o{ RESERVA : "associado a"
-    STATUS ||--o{ RESERVA : "associado a"
+    STATUS_RESERVA ||--o{ RESERVA : "associado a"
 ```
