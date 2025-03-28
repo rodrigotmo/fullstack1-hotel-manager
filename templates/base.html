@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ptbr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
+        <a class="navbar-brand" href={%url "home" %}>Hotel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav w-100">
+                <li class="nav-item active">
+                    <a class="nav-link" href={%url "home" %}>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={%url "funcionarios" %}>Funcionario</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Reservas
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Reservar</a>
+                        <a class="dropdown-item" href="#">Ver reservas</a>
+                        <a class="dropdown-item" href="#">Check-in</a>
+                        <a class="dropdown-item" href="#">Check-out</a>
+                        <a class="dropdown-item" href="#">Relatórios</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={%url "logout" %}>Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <ul class="alert alert-float" role="alert">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    <script>
+        setTimeout(function () {
+            var messages = document.querySelector('.alert-float');
+            if (messages) {
+                messages.style.display = 'none';
+            }
+        }, 5000); 
+    </script>
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+</html>
+
+<style>
+    body {
+        background-color: #afb0b1;
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+    }
+
+    .alert-float {
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        list-style-type: none;
+        transform: translateX(-50%);
+        z-index: 1050;
+        width: 60%;
+    }
+
+
+
+    .alert-float li {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        margin: 0px 0;
+        border-radius: 5px;
+
+    }
+
+    .alert-float li.success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+</style>

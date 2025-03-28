@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ptbr">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+</head>
+
+<body class="text-center">
+  <div id="intro" class="bg-image shadow-2-strong">
+    
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    <script>
+      setTimeout(function() {
+        var messages = document.querySelector('.messages');
+        if (messages) {
+          messages.style.display = 'none';
+        }
+      }, 5000); 
+    </script>
+    {% endif %}
+
+    <div class="mask d-flex align-items-center h-100" style="background-color: rgba(0, 0, 0, 0.8);">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-xl-5 col-md-8">
+            <form class="bg-white rounded shadow-5-strong p-5" action="{% url 'login' %}" method="post">
+              {% csrf_token %}
+              <h2 class="text-uppercase text-center mb-5">gerenciamento hotel</h2>
+
+              <div class="form-outline mb-4" data-mdb-input-init>
+                <input type="text" id="usuario" name="usuario" class="form-control" />
+                <label class="form-label" for="senha">Usuário</label>
+              </div>
+
+
+              <div class="form-outline mb-4" data-mdb-input-init>
+                <input type="password" id="senha" name="senha" class="form-control" />
+                <label class="form-label" for="senha">Senha</label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block form-control" data-mdb-ripple-init>Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+<style>
+  .messages {
+    position: absolute;
+    list-style-type: none;
+    background-color: transparent;
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    width: 100vw;
+  }
+
+  .messages li {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin: 0px 0;
+    border-radius: 5px;
+
+  }
+
+  .messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  #intro {
+    background-image: url(https://mdbootstrap.com/img/new/fluid/city/008.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    width: 100vw;
+    height: 100vh;
+    margin: 0 auto;
+  }
+
+
+  .navbar .nav-link {
+    color: #fff !important;
+  }
+</style>
