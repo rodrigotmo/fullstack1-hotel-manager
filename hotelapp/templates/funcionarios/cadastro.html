@@ -1,14 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form action="{% url 'cadastro_funcionario' %}" method="post">  
-    {% csrf_token %}
-    <h1>Cadastro de Funcionário</h1>
-    nome: <input type="text" name="nome" required><br>
-    usuario: <input type="text" name="usuario" required><br>
-    senha: <input type="password" name="senha" required><br>
-    Administrador: <input type="checkbox" name="administrador"><br>
-    <input type="submit" value="Cadastrar"><br>
-</form>
+<div class="container mt-5">
+    <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%; margin: 0 auto;">
+
+        <form action="{% if funcionario %}{% url 'editar_funcionario' funcionario.id %}{% else %}{% url 'cadastrar_funcionario' %}{% endif %}" method="post">
+            {% csrf_token %}
+            <h1 class="text-center mb-4">
+                {% if funcionario %}Edição de Funcionário{% else %}Cadastro de Funcionário{% endif %}
+            </h1>
+
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome:</label>
+                <input type="text" id="nome" name="nome" class="form-control" value="{% if funcionario %}{{ funcionario.nome }}{% endif %}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuário:</label>
+                <input type="text" id="usuario" name="usuario" class="form-control" value="{% if funcionario %}{{ funcionario.username }}{% endif %}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="senha" class="form-label">Senha:</label>
+                <input type="password" id="senha" name="senha" class="form-control" {% if not funcionario %}required{% endif %}>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" id="administrador" name="administrador" class="form-check-input" {% if funcionario and funcionario.is_staff %}checked{% endif %}>
+                <label for="administrador" class="form-check-label">Administrador</label>
+            </div>
+
+            <div class="d-grid gap-2">
+                <input type="submit" class="btn btn-primary" value="{% if funcionario %}Salvar Alterações{% else %}Cadastrar{% endif %}">
+            </div>
+        </form>
+
+    </div>
+</div>
 {% endblock content %}
 

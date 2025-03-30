@@ -28,6 +28,6 @@ urlpatterns = [
     path('home', views.home, name='home'), 
     
     path('funcionarios', views.funcionarios, name='funcionarios'), 
-    path('funcionarios/cadastro', views.cadastro_funcionario, name='cadastro_funcionario'), 
-
+    path('funcionarios/cadastro', views.cadastrar_funcionario, name='cadastrar_funcionario'), 
+    path('funcionarios/editar/<int:id>', views.editar_funcionario, name='editar_funcionario'), 
 ]
