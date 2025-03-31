@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
-from hotelapp.models import Funcionario
+from hotelapp.models import Funcionario, Quarto, Reserva, Cliente, Ocorrencia, StatusQuarto, StatusReserva
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 
@@ -16,7 +16,7 @@ def login(request):
         usuario = request.POST.get('usuario')
         senha = request.POST.get('senha')
         funcionario = authenticate(request, username=usuario, password=senha)
-        if funcionario is not None:
+        if funcionario is not None and funcionario.ativo:
             auth_login(request, funcionario)
             messages.success(request, 'Bem-vindo(a), {}'.format(request.user.username))
             return redirect('home')
@@ -37,7 +37,41 @@ def logout(request):
         
 def home(request):
     if request.user.is_authenticated:
-        return render(request, 'home.html')
+        # Obter os objetos de StatusQuarto e StatusReserva para filtro
+        status_liberado = StatusQuarto.objects.get(nome_status_quarto='Liberado')
+        status_indisponivel = StatusQuarto.objects.get(nome_status_quarto='Indisponível')
+        status_em_uso = StatusQuarto.objects.get(nome_status_quarto='Em uso')
+
+        status_reservada = StatusReserva.objects.get(nome_status_reserva='Reservada')
+        status_em_andamento = StatusReserva.objects.get(nome_status_reserva='Em andamento')
+        status_finalizada = StatusReserva.objects.get(nome_status_reserva='Finalizada')
+        status_cancelada = StatusReserva.objects.get(nome_status_reserva='Cancelada')
+
+        dados_dashboard = {
+            'qtd_funcionarios': Funcionario.objects.all().count(),
+            'qtd_funcionarios_ativos': Funcionario.objects.filter(ativo=True).count(),
+            'qtd_funcionarios_inativos': Funcionario.objects.filter(ativo=False).count(),
+            
+            'qtd_clientes': Cliente.objects.all().count(),
+            'qtd_clientes_ativos': Cliente.objects.filter(ativo=True).count(),
+            'qtd_clientes_inativos': Cliente.objects.filter(ativo=False).count(),
+            
+            'qtd_quartos': Quarto.objects.all().count(),
+            'qtd_quartos_disponivel': Quarto.objects.filter(status_quarto=status_liberado).count(),
+            'qtd_quartos_indisponivel': Quarto.objects.filter(status_quarto=status_indisponivel).count(),
+            'qtd_quartos_em_uso': Quarto.objects.filter(status_quarto=status_em_uso).count(),
+            
+            'qtd_reservas': Reserva.objects.all().count(),
+            'qtd_reservas_ativas': Reserva.objects.filter(status_reserva__in=[status_reservada, status_em_andamento]).count(),
+            'qtd_reservas_finalizadas': Reserva.objects.filter(status_reserva=status_finalizada).count(),
+            'qtd_reservas_canceladas': Reserva.objects.filter(status_reserva=status_cancelada).count(),
+            
+            'qtd_ocorrencias': Ocorrencia.objects.all().count(),
+            'qtd_ocorrencias_ativas': Ocorrencia.objects.filter(finalizada=False).count(),
+            'qtd_ocorrencias_finalizadas': Ocorrencia.objects.filter(finalizada=True).count(),
+        }
+        
+        return render(request, 'home.html', dados_dashboard)
     else:
         messages.error(request, 'Você precisa estar logado para acessar esta página.')  
         return redirect('login')
@@ -114,3 +148,22 @@ def editar_funcionario(request,id):
         else:
             messages.error(request, "Nome e Usuário são obrigatórios!")
 
+def desativar_funcionario(request, id):
+    if not request.user.is_authenticated and not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    funcionario = get_object_or_404(Funcionario, id=id)
+    funcionario.ativo = False
+    funcionario.save()
+    messages.success(request, "Funcionário desativado com sucesso!")
+    return redirect('funcionarios')
+
+def ativar_funcionario(request, id):
+    if not request.user.is_authenticated and not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    funcionario = get_object_or_404(Funcionario, id=id)
+    funcionario.ativo = True
+    funcionario.save()
+    messages.success(request, "Funcionário ativado com sucesso!")
+    return redirect('funcionarios')

@@ -20,7 +20,8 @@
                             <th>ID</th>
                             <th>Nome</th>
                             <th>Usuário</th>
-                            <th>Administrador (S/N)</th>
+                            <th>Administrador</th>
+                            <th>Ativo</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -31,8 +32,14 @@
                             <td>{{ funcionario.nome }}</td>
                             <td>{{ funcionario.username }}</td>
                             <td>{{ funcionario.is_staff }}</td>
+                            <td>{{ funcionario.ativo }}</td>
                             <td>
                                 <a href="{% url 'editar_funcionario' funcionario.id %}" class="btn btn-primary btn-sm">Editar</a>
+                                {% if funcionario.ativo %}
+                                    <a href="{% url 'desativar_funcionario' funcionario.id %}" class="btn btn-warning btn-sm">Desativar</a>
+                                {% else %}
+                                    <a href="{% url 'ativar_funcionario' funcionario.id %}" class="btn btn-success btn-sm">Reativar</a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% empty %}

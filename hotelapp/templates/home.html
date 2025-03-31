@@ -1,5 +1,102 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .card {
+        height: 250px;
+        width: 100%;
+        margin-bottom: 50px;
+        border-color: #48494b;
+    }
+
+    .card-header {
+        background-color: #48494b;
+        color: white;
+    }
+
+    .card-body {
+        font-size: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+
+<div class="container">
+    <h1 class="text-center my-4">Dashboard</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-users"></i> Funcionários
+                </div>
+                <div class="card-body">
+                    <p>Total: {{ qtd_funcionarios }}</p>
+                    <p>Ativos: {{ qtd_funcionarios_ativos }}</p>
+                    <p>Inativos: {{ qtd_funcionarios_inativos }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-user-friends"></i> Clientes
+                </div>
+                <div class="card-body">
+                    <p>Total: {{ qtd_clientes }}</p>
+                    <p>Ativos: {{ qtd_clientes_ativos }}</p>
+                    <p>Inativos: {{ qtd_clientes_inativos }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-bed"></i> Quartos
+                </div>
+                <div class="card-body">
+                    <p>Total: {{ qtd_quartos }}</p>
+                    <p>Disponíveis: {{ qtd_quartos_disponivel }}</p>
+                    <p>Indisponíveis: {{ qtd_quartos_indisponivel }}</p>
+                    <p>Em Uso: {{ qtd_quartos_em_uso }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-bookmark"></i> Reservas
+                </div>
+                <div class="card-body">
+                    <p>Total: {{ qtd_reservas }}</p>
+                    <p>Ativas: {{ qtd_reservas_ativas }}</p>
+                    <p>Finalizadas: {{ qtd_reservas_finalizadas }}</p>
+                    <p>Canceladas: {{ qtd_reservas_canceladas }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-exclamation-circle"></i> Ocorrências
+                </div>
+                <div class="card-body">
+                    <p>Total: {{ qtd_ocorrencias }}</p>
+                    <p>Ativas: {{ qtd_ocorrencias_ativas }}</p>
+                    <p>Finalizadas: {{ qtd_ocorrencias_finalizadas }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock content %}
