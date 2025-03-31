@@ -31,5 +31,9 @@ urlpatterns = [
     path('funcionarios/cadastro', views.cadastrar_funcionario, name='cadastrar_funcionario'), 
     path('funcionarios/editar/<int:id>', views.editar_funcionario, name='editar_funcionario'), 
     path('funcionarios/desativar/<int:id>', views.desativar_funcionario, name='desativar_funcionario'), 
-    path('funcionarios/ativar/<int:id>', views.ativar_funcionario, name='ativar_funcionario'), 
+    path('funcionarios/ativar/<int:id>', views.ativar_funcionario, name='ativar_funcionario'),
+    
+    path('quartos', views.quartos, name='quartos'), 
+    path('quartos/cadastro', views.cadastrar_quarto, name='cadastrar_quarto'), 
+    path('quartos/editar/<int:id>', views.editar_quarto, name='editar_quarto'), 
 ]

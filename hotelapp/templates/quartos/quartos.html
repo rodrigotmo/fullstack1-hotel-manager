@@ -4,11 +4,11 @@
 
 
 <div class="container mt-5">
-    <h1 class="text-center my-4">Lista de Funcionários</h1>
+    <h1 class="text-center my-4">Lista de Quartos</h1>
     
     <div class="mb-4 text-center">
-        <a href="{% url 'cadastrar_funcionario' %}" class="btn btn-success mb-4">Novo</a>
-        <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Buscar por nome, usuário ou id...">
+        <a href="{% url 'cadastrar_quarto' %}" class="btn btn-success mb-4">Novo</a>
+        <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Buscar por número...">
     </div>
 
     <div class="row justify-content-center">
@@ -18,33 +18,28 @@
                     <thead class="bg-dark text-white">
                         <tr>
                             <th>ID</th>
-                            <th>Nome</th>
-                            <th>Usuário</th>
-                            <th>Administrador</th>
-                            <th>Ativo</th>
+                            <th>Número</th>
+                            <th>Capacidade</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody class="text-dark">
-                        {% for funcionario in funcionarios %}
+                        {% for quarto in quartos %}
                         <tr>
-                            <td>{{ funcionario.id }}</td>
-                            <td>{{ funcionario.nome }}</td>
-                            <td>{{ funcionario.username }}</td>
-                            <td>{{ funcionario.is_staff }}</td>
-                            <td>{{ funcionario.ativo }}</td>
+                            <td>{{ quarto.id }}</td>
+                            <td>{{ quarto.numero }}</td>
+                            <td>{{ quarto.capacidade }}</td>
+                            <td>{{ quarto.tipo_quarto }}</td>
+                            <td>{{ quarto.status_quarto }}</td>
                             <td>
-                                <a href="{% url 'editar_funcionario' funcionario.id %}" class="btn btn-primary btn-sm">Editar</a>
-                                {% if funcionario.ativo %}
-                                    <a href="{% url 'desativar_funcionario' funcionario.id %}" class="btn btn-warning btn-sm">Desativar</a>
-                                {% else %}
-                                    <a href="{% url 'ativar_funcionario' funcionario.id %}" class="btn btn-success btn-sm">Reativar</a>
-                                {% endif %}
+                                <a href="{% url 'editar_quarto' quarto.id %}" class="btn btn-primary btn-sm">Editar</a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6">Nenhum funcionário encontrado.</td>
+                            <td colspan="6">Nenhum quarto encontrado.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -30,11 +30,23 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle" href="#" id="drop-quartos" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Quartos
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="drop-quartos">
+                        <a class="dropdown-item" href={%url "quartos" %}>Quartos</a>
+                        <a class="dropdown-item" href="#">Tipos de Quartos</a>
+                        <a class="dropdown-item" href="#">Ocorrências</a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="drop-reservas" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         Reservas
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <div class="dropdown-menu" aria-labelledby="drop-reservas">
                         <a class="dropdown-item" href="#">Reservar</a>
                         <a class="dropdown-item" href="#">Ver reservas</a>
                         <a class="dropdown-item" href="#">Check-in</a>
@@ -56,12 +68,21 @@
         {% endfor %}
     </ul>
     <script>
-        setTimeout(function () {
-            var messages = document.querySelector('.alert-float');
-            if (messages) {
-                messages.style.display = 'none';
-            }
-        }, 5000); 
+        function showAlert() {
+            const alert = document.querySelector('.alert-float');
+            alert.style.display = 'block';
+            setTimeout(function () {
+                alert.classList.add('fade-out');
+            }, 3000); 
+
+
+            setTimeout(function () {
+                alert.style.display = 'none'; 
+            }, 4000); 
+        }
+
+        // Chama a função para exibir o alerta
+        showAlert();
     </script>
     {% endif %}
 
@@ -85,12 +106,27 @@
 
     .alert-float {
         position: fixed;
-        top: 100px;
+        bottom: 30px;
         left: 50%;
         list-style-type: none;
         transform: translateX(-50%);
         z-index: 1050;
-        width: 60%;
+        width: 30%;
+        opacity: 0;
+        text-align: center;
+        /* Inicia invisível */
+        animation: fadeIn 1s forwards;
+        /* Animação de fade in */
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
     }
 
 
@@ -101,7 +137,22 @@
         padding: 10px;
         margin: 0px 0;
         border-radius: 5px;
+        opacity: 1;
+    }
 
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    /* Classe para ativar o fade out */
+    .alert-float.fade-out {
+        animation: fadeOut 1s forwards;
     }
 
     .alert-float li.success {

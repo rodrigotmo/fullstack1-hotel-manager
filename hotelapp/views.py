@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
-from hotelapp.models import Funcionario, Quarto, Reserva, Cliente, Ocorrencia, StatusQuarto, StatusReserva
+from hotelapp.models import Funcionario, Quarto, Reserva, Cliente, Ocorrencia, StatusQuarto, StatusReserva, TipoQuarto
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 
@@ -167,3 +167,80 @@ def ativar_funcionario(request, id):
     funcionario.save()
     messages.success(request, "Funcionário ativado com sucesso!")
     return redirect('funcionarios')
+
+
+
+def quartos(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        quartos = Quarto.objects.all()
+        return render(request, 'quartos/quartos.html', {'quartos': quartos})
+    else:
+        messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
+        return redirect('home')
+    
+def cadastrar_quarto(request):
+    if not request.user.is_authenticated and request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    
+    if request.method == 'GET':
+        tipos_quarto = TipoQuarto.objects.all()
+        return render(request, 'quartos/cadastro.html', {'tipos_quarto': tipos_quarto, 'quarto': None})
+    elif request.method == 'POST':
+        numero = request.POST.get('numero')
+        capacidade = request.POST.get('capacidade')
+        tipo = request.POST.get('tipo_quarto')
+        status = 1  # Status padrão para "Liberado"
+        
+        quarto = Quarto.objects.filter(numero=numero).first()
+        if quarto:
+            messages.error(request, 'Quarto já cadastrado')
+            return redirect('quartos')
+        elif numero and tipo and capacidade and status:
+            tipo = TipoQuarto.objects.filter(id=tipo).first()
+            if tipo:
+                quarto = Quarto.objects.create(
+                    numero=numero,
+                    capacidade=capacidade,
+                    tipo_quarto_id=tipo.id,
+                    status_quarto_id=status,
+                )
+                quarto.save()
+                messages.success(request, 'Quarto cadastrado com sucesso.')
+                return redirect('quartos')
+            else:
+                messages.error(request, 'Tipo de quarto inválido')
+                return redirect('quartos')
+        else:
+            messages.error(request, 'Número, Tipo e Capacidade são obrigatórios!')  
+            return redirect('cadastrar_quarto')
+        
+def editar_quarto(request,id):
+    if not request.user.is_authenticated and not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    
+    quarto = get_object_or_404(Quarto, id=id)
+    if request.method == 'GET':
+        tipos_quarto = TipoQuarto.objects.all()
+        return render(request, 'quartos/cadastro.html', {'quarto': quarto, 'tipos_quarto': tipos_quarto})
+    
+    elif request.method == 'POST':
+        numero = request.POST.get('numero')
+        capacidade = request.POST.get('capacidade')
+        tipo = request.POST.get('tipo_quarto')
+        if numero and capacidade and tipo:
+            tipo = TipoQuarto.objects.filter(id=tipo).first()
+            if tipo:
+                quarto.numero = numero
+                quarto.capacidade = capacidade
+                quarto.tipo_quarto_id = tipo
+                quarto.save()
+                messages.success(request, 'Quarto atualizado com sucesso.')
+                return redirect('quartos')
+            else:
+                messages.error(request, 'Tipo de quarto inválido')
+                return redirect('quartos')
+        else:
+            messages.error(request, "Número, Tipo e Capacidade são obrigatórios!")
+            return redirect('cadastrar_quarto', id=id)
