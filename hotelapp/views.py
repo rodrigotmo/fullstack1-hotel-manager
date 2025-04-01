@@ -136,10 +136,10 @@ def editar_funcionario(request,id):
         password = request.POST.get('senha')
         administrador = 'administrador' in request.POST 
 
-        outro_funcionario = Funcionario.objects.exclude(id=id).filter(usuario=username).first()
+        outro_funcionario = Funcionario.objects.exclude(id=id).filter(username=username).first()
         if outro_funcionario:
             messages.error(request, 'Usuário já cadastrado')
-            return redirect('funcionarios')
+            return redirect('editar_funcionario', id=id)
             
         if nome and username:
             funcionario.nome = nome
@@ -153,7 +153,7 @@ def editar_funcionario(request,id):
             return redirect('funcionarios')
         else:
             messages.error(request, "Nome e Usuário são obrigatórios!")
-            return redirect('funcionarios')
+            return redirect('editar_funcionario', id=id)
 
 def desativar_funcionario(request, id):
     if not request.user.is_authenticated and not request.user.is_staff:
@@ -251,7 +251,7 @@ def editar_quarto(request,id):
                 return redirect('quartos')
         else:
             messages.error(request, "Número deve ser único, Tipo e Capacidade são obrigatórios!")
-            return redirect('cadastrar_quarto', id=id)
+            return redirect('editar_quarto', id=id)
         
 def remover_quarto(request,id):
     if not request.user.is_authenticated and not request.user.is_staff:
@@ -319,7 +319,7 @@ def editar_tipo_quarto(request, id):
         outro_tipo_quarto = TipoQuarto.objects.exclude(id=id).filter(nome_tipo_quarto=nome).first()
         if outro_tipo_quarto:
             messages.error(request, 'Tipo Quarto já cadastrado')
-            return redirect('tipos_quarto')
+            return redirect('editar_tipo_quarto', id=id)
         elif nome:
                 tipo_quarto.nome_tipo_quarto=nome
                 tipo_quarto.save()
@@ -327,5 +327,5 @@ def editar_tipo_quarto(request, id):
                 return redirect('tipos_quarto')
         else:
             messages.error(request, 'Nome é obrigatório!')  
-            return redirect('tipos_quarto')
+            return redirect('editar_tipo_quarto', id=id)
         
