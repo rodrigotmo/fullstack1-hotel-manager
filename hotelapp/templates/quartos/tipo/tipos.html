@@ -4,11 +4,11 @@
 
 
 <div class="container mt-5">
-    <h1 class="text-center my-4">Lista de Quartos</h1>
+    <h1 class="text-center my-4">Lista de Tipos de Quarto</h1>
     
     <div class="mb-4 text-center">
-        <a href="{% url 'cadastrar_quarto' %}" class="btn btn-success mb-4">Novo</a>
-        <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Buscar por número...">
+        <a href="{% url 'cadastrar_tipo_quarto' %}" class="btn btn-success mb-4">Novo</a>
+        <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Buscar por nome...">
     </div>
 
     <div class="row justify-content-center">
@@ -18,24 +18,17 @@
                     <thead class="bg-dark text-white">
                         <tr>
                             <th>ID</th>
-                            <th>Número</th>
-                            <th>Capacidade</th>
-                            <th>Tipo</th>
-                            <th>Status</th>
+                            <th>Nome</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody class="text-dark">
-                        {% for quarto in quartos %}
+                        {% for tipo_quarto in tipos_quarto %}
                         <tr>
-                            <td>{{ quarto.id }}</td>
-                            <td>{{ quarto.numero }}</td>
-                            <td>{{ quarto.capacidade }}</td>
-                            <td>{{ quarto.tipo_quarto }}</td>
-                            <td>{{ quarto.status_quarto }}</td>
+                            <td>{{ tipo_quarto.id }}</td>
+                            <td>{{ tipo_quarto.nome_tipo_quarto }}</td>
                             <td>
-                                <a href="{% url 'editar_quarto' quarto.id %}" class="btn btn-primary btn-sm">Editar</a>
-                                <a href="{% url 'remover_quarto' quarto.id %}" class="btn btn-danger btn-sm">Remover</a>
+                                <a href="{% url 'editar_tipo_quarto' tipo_quarto.id %}" class="btn btn-primary btn-sm">Editar</a>
                             </td>
                         </tr>
                         {% empty %}

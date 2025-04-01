@@ -76,7 +76,7 @@ class StatusQuarto(models.Model):
     
     @staticmethod
     def create_default_values():
-        statuses = ['Liberado', 'Em uso', 'Indisponível']
+        statuses = ['Liberado', 'Em uso', 'Indisponível', 'Removido']
         for status in statuses:
             if not StatusQuarto.objects.filter(nome_status_quarto=status).exists():
                 StatusQuarto.objects.create(nome_status_quarto=status)
@@ -98,6 +98,7 @@ class TarifaTipoQuarto(models.Model):
     nome_tarifa_tipo_quarto = models.CharField(max_length=255)
     data_inicio_vigencia = models.DateField()
     data_fim_vigencia = models.DateField()
+    valor_diaria = models.FloatField(default=0)
 
     def __str__(self):
         return self.nome_tarifa_tipo_quarto

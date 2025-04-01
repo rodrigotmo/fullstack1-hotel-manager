@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%; margin: 0 auto;">
+
+        <form action="{% if tipo_quarto %}{% url 'editar_tipo_quarto' tipo_quarto.id %}{% else %}{% url 'cadastrar_tipo_quarto' %}{% endif %}" method="post">
+            {% csrf_token %}
+            <h1 class="text-center mb-4">
+                {% if tipo_quarto %}Edição de Tipo de Quarto{% else %}Cadastro de Tipo de Quarto{% endif %}
+            </h1>
+
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome:</label>
+                <input type="text" id="nome" name="nome" class="form-control" value="{% if tipo_quarto %}{{ tipo_quarto.nome_tipo_quarto }}{% endif %}" required>
+            </div>
+
+            <div class="d-grid gap-2">
+                <input type="submit" class="btn btn-primary" value="{% if tipo_quarto %}Salvar Alterações{% else %}Cadastrar{% endif %}">
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock content %}
+

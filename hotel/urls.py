@@ -36,4 +36,9 @@ urlpatterns = [
     path('quartos', views.quartos, name='quartos'), 
     path('quartos/cadastro', views.cadastrar_quarto, name='cadastrar_quarto'), 
     path('quartos/editar/<int:id>', views.editar_quarto, name='editar_quarto'), 
+    path('quartos/remover/<int:id>', views.remover_quarto, name='remover_quarto'), 
+    
+    path('quartos/tipos', views.tipos_quarto, name='tipos_quarto'), 
+    path('quartos/tipos/cadastro', views.cadastrar_tipo_quarto, name='cadastrar_tipo_quarto'), 
+    path('quartos/tipos/editar/<int:id>', views.editar_tipo_quarto, name='editar_tipo_quarto'), 
 ]

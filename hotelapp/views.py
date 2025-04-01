@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from hotelapp.models import Funcionario, Quarto, Reserva, Cliente, Ocorrencia, StatusQuarto, StatusReserva, TipoQuarto
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
+from django.db.models import Q
 
 # Create your views here.
 def login(request):
@@ -131,15 +132,20 @@ def editar_funcionario(request,id):
     
     elif request.method == 'POST':
         nome = request.POST.get('nome')
-        usuario = request.POST.get('usuario')
-        senha = request.POST.get('senha')
+        username = request.POST.get('usuario')
+        password = request.POST.get('senha')
         administrador = 'administrador' in request.POST 
 
-        if nome and usuario:
+        outro_funcionario = Funcionario.objects.exclude(id=id).filter(usuario=username).first()
+        if outro_funcionario:
+            messages.error(request, 'Usuário já cadastrado')
+            return redirect('funcionarios')
+            
+        if nome and username:
             funcionario.nome = nome
-            funcionario.usuario = usuario
-            if senha:  
-                funcionario.set_password(senha)
+            funcionario.username = username
+            if password:  
+                funcionario.set_password(password)
             funcionario.is_staff = administrador
             funcionario.save()
 
@@ -147,6 +153,7 @@ def editar_funcionario(request,id):
             return redirect('funcionarios')
         else:
             messages.error(request, "Nome e Usuário são obrigatórios!")
+            return redirect('funcionarios')
 
 def desativar_funcionario(request, id):
     if not request.user.is_authenticated and not request.user.is_staff:
@@ -172,7 +179,7 @@ def ativar_funcionario(request, id):
 
 def quartos(request):
     if request.user.is_authenticated and request.user.is_staff:
-        quartos = Quarto.objects.all()
+        quartos = Quarto.objects.exclude(status_quarto__nome_status_quarto='Removido').all()
         return render(request, 'quartos/quartos.html', {'quartos': quartos})
     else:
         messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
@@ -229,7 +236,8 @@ def editar_quarto(request,id):
         numero = request.POST.get('numero')
         capacidade = request.POST.get('capacidade')
         tipo = request.POST.get('tipo_quarto')
-        if numero and capacidade and tipo:
+        outro_quarto = Quarto.objects.exclude(id=id).filter(numero=numero).first()
+        if numero and capacidade and tipo and outro_quarto is None:
             tipo = TipoQuarto.objects.filter(id=tipo).first()
             if tipo:
                 quarto.numero = numero
@@ -242,5 +250,82 @@ def editar_quarto(request,id):
                 messages.error(request, 'Tipo de quarto inválido')
                 return redirect('quartos')
         else:
-            messages.error(request, "Número, Tipo e Capacidade são obrigatórios!")
+            messages.error(request, "Número deve ser único, Tipo e Capacidade são obrigatórios!")
             return redirect('cadastrar_quarto', id=id)
+        
+def remover_quarto(request,id):
+    if not request.user.is_authenticated and not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    
+    quarto = get_object_or_404(Quarto, id=id)
+    reservas = Reserva.objects.filter(Q(quarto_id=quarto) & (Q(status_reserva__nome_status_reserva='Reservada') | Q(status_reserva__nome_status_reserva='Em andamento'))).first()
+    if reservas:
+        messages.error(request, 'Quarto não pode ser removido, pois possui reservas ativas.')
+        return redirect('quartos')
+    else:
+        quarto.status_quarto = StatusQuarto.objects.get(nome_status_quarto='Removido')
+        quarto.numero = quarto.numero + ' - Removido'
+        quarto.save()
+        messages.success(request, 'Quarto removido com sucesso.')
+        return redirect('quartos')
+
+def tipos_quarto(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        tipos_quarto = TipoQuarto.objects.all()
+        return render(request, 'quartos/tipo/tipos.html', {'tipos_quarto': tipos_quarto})
+    else:
+        messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
+        return redirect('home')
+    
+def cadastrar_tipo_quarto(request):
+    if not request.user.is_authenticated and request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    if request.method == 'GET':
+        return render(request, 'quartos/tipo/cadastro.html', {'tipo_quarto': None})
+    elif request.method == 'POST':
+        nome = request.POST.get('nome')
+        
+        tipo_quarto = TipoQuarto.objects.filter(nome_tipo_quarto=nome).first()
+        if tipo_quarto:
+            messages.error(request, 'Tipo Quarto já cadastrado')
+            return redirect('tipos_quarto')
+        elif nome:
+                tipo_quarto = TipoQuarto.objects.create(
+                   nome_tipo_quarto=nome,
+                )
+                tipo_quarto.save()
+                messages.success(request, 'Tipo Quarto cadastrado com sucesso.')
+                return redirect('tipos_quarto')
+        else:
+            messages.error(request, 'Nome é obrigatório!')  
+            return redirect('tipos_quarto')
+        
+        
+def editar_tipo_quarto(request, id):
+    
+    if not request.user.is_authenticated and request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    
+    tipo_quarto = get_object_or_404(TipoQuarto, id=id)
+    if request.method == 'GET':
+        return render(request, 'quartos/tipo/cadastro.html', {'tipo_quarto': tipo_quarto})
+    
+    elif request.method == 'POST':
+        nome = request.POST.get('nome')
+        
+        outro_tipo_quarto = TipoQuarto.objects.exclude(id=id).filter(nome_tipo_quarto=nome).first()
+        if outro_tipo_quarto:
+            messages.error(request, 'Tipo Quarto já cadastrado')
+            return redirect('tipos_quarto')
+        elif nome:
+                tipo_quarto.nome_tipo_quarto=nome
+                tipo_quarto.save()
+                messages.success(request, 'Tipo Quarto alterado com sucesso.')
+                return redirect('tipos_quarto')
+        else:
+            messages.error(request, 'Nome é obrigatório!')  
+            return redirect('tipos_quarto')
+        
