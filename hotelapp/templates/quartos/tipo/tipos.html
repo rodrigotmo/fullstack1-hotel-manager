@@ -28,7 +28,9 @@
                             <td>{{ tipo_quarto.id }}</td>
                             <td>{{ tipo_quarto.nome_tipo_quarto }}</td>
                             <td>
+                                {% if tipo_quarto.nome_tipo_quarto != 'Simples' and tipo_quarto.nome_tipo_quarto != 'Duplo' and tipo_quarto.nome_tipo_quarto != 'Suite' %}
                                 <a href="{% url 'editar_tipo_quarto' tipo_quarto.id %}" class="btn btn-primary btn-sm">Editar</a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% empty %}

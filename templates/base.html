@@ -25,9 +25,11 @@
                 <li class="nav-item active">
                     <a class="nav-link" href={%url "home" %}>Home</a>
                 </li>
+                {% if user.is_staff %}
                 <li class="nav-item">
                     <a class="nav-link" href={%url "funcionarios" %}>Funcionario</a>
                 </li>
+                {%endif%}
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="drop-quartos" data-bs-toggle="dropdown"
@@ -35,8 +37,8 @@
                         Quartos
                     </a>
                     <div class="dropdown-menu" aria-labelledby="drop-quartos">
-                        <a class="dropdown-item" href={%url "quartos" %}>Quartos</a>
-                        <a class="dropdown-item" href={%url "tipos_quarto"%}>Tipos de Quartos</a>
+                        {% if user.is_staff %}<a class="dropdown-item" href={%url "quartos" %}>Quartos</a>{%endif%}
+                        {% if user.is_staff %}<a class="dropdown-item" href={%url "tipos_quarto"%}>Tipos de Quartos</a>{%endif%}
                         <a class="dropdown-item" href="#">Ocorrências</a>
                     </div>
                 </li>

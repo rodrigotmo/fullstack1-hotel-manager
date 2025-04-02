@@ -24,18 +24,14 @@ def login(request):
         else:
             messages.error(request, 'Usuário ou senha inválidos.')
             return redirect('login')
-        
-        
-        
+     
 def logout(request):
     if request.user.is_authenticated:
         auth_logout(request)
         return redirect('login')
     else:
         return redirect('login')
-    
-    
-        
+      
 def home(request):
     if request.user.is_authenticated:
         # Obter os objetos de StatusQuarto e StatusReserva para filtro
@@ -87,7 +83,6 @@ def funcionarios(request):
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
 
-
 def cadastrar_funcionario(request):
     if not request.user.is_authenticated and not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
@@ -119,7 +114,6 @@ def cadastrar_funcionario(request):
             funcionario.save()
             messages.success(request, 'Usuário cadastrado com sucesso.')
             return redirect('funcionarios')
-
 
 def editar_funcionario(request,id):
     if not request.user.is_authenticated and not request.user.is_staff:
@@ -252,6 +246,27 @@ def editar_quarto(request,id):
         else:
             messages.error(request, "Número deve ser único, Tipo e Capacidade são obrigatórios!")
             return redirect('editar_quarto', id=id)
+  
+def bloquear_liberar_quarto(request, id):
+    if not request.user.is_authenticated and not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    
+    quarto = get_object_or_404(Quarto, id=id) 
+    reservas = Reserva.objects.filter(Q(quarto_id=quarto) & (Q(status_reserva__nome_status_reserva='Reservada') | Q(status_reserva__nome_status_reserva='Em andamento'))).first()
+    if reservas:
+        messages.error(request, 'Status do quarto não pode ser mudado pois possui reservas ativas.')
+        return redirect('quartos')
+    else:
+        if quarto.status_quarto.nome_status_quarto == 'Indisponível':
+            quarto.status_quarto = StatusQuarto.objects.get(nome_status_quarto='Liberado')
+        else:
+            quarto.status_quarto = StatusQuarto.objects.get(nome_status_quarto='Indisponível')
+            
+        quarto.save()
+        messages.success(request, quarto.status_quarto)
+        messages.success(request, 'Status do quarto alterado com sucesso.')
+        return redirect('quartos')
         
 def remover_quarto(request,id):
     if not request.user.is_authenticated and not request.user.is_staff:
@@ -269,6 +284,8 @@ def remover_quarto(request,id):
         quarto.save()
         messages.success(request, 'Quarto removido com sucesso.')
         return redirect('quartos')
+
+
 
 def tipos_quarto(request):
     if request.user.is_authenticated and request.user.is_staff:
@@ -300,8 +317,7 @@ def cadastrar_tipo_quarto(request):
                 return redirect('tipos_quarto')
         else:
             messages.error(request, 'Nome é obrigatório!')  
-            return redirect('tipos_quarto')
-        
+            return redirect('tipos_quarto') 
         
 def editar_tipo_quarto(request, id):
     
@@ -309,7 +325,7 @@ def editar_tipo_quarto(request, id):
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
     
-    tipo_quarto = get_object_or_404(TipoQuarto, id=id)
+    tipo_quarto = get_object_or_404(TipoQuarto, Q(id=id) & ~Q(nome_tipo_quarto__in=['Simples', 'Duplo', 'Suite']))
     if request.method == 'GET':
         return render(request, 'quartos/tipo/cadastro.html', {'tipo_quarto': tipo_quarto})
     
@@ -328,4 +344,5 @@ def editar_tipo_quarto(request, id):
         else:
             messages.error(request, 'Nome é obrigatório!')  
             return redirect('editar_tipo_quarto', id=id)
+        
         

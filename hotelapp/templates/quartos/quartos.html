@@ -35,6 +35,11 @@
                             <td>{{ quarto.status_quarto }}</td>
                             <td>
                                 <a href="{% url 'editar_quarto' quarto.id %}" class="btn btn-primary btn-sm">Editar</a>
+                                {% if quarto.status_quarto.nome_status_quarto == 'Liberado' %}
+                                <a href="{% url 'bloquear_quarto' quarto.id %}" class="btn btn-warning btn-sm">Bloquear</a>
+                                {% elif quarto.status_quarto.nome_status_quarto == 'Indisponível' %}
+                                <a href="{% url 'liberar_quarto' quarto.id %}" class="btn btn-warning btn-sm">Liberar</a>
+                                {% endif %}
                                 <a href="{% url 'remover_quarto' quarto.id %}" class="btn btn-danger btn-sm">Remover</a>
                             </td>
                         </tr>

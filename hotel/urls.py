@@ -37,6 +37,8 @@ urlpatterns = [
     path('quartos/cadastro', views.cadastrar_quarto, name='cadastrar_quarto'), 
     path('quartos/editar/<int:id>', views.editar_quarto, name='editar_quarto'), 
     path('quartos/remover/<int:id>', views.remover_quarto, name='remover_quarto'), 
+    path('quartos/bloquear/<int:id>', views.bloquear_liberar_quarto, name='bloquear_quarto'), 
+    path('quartos/liberar/<int:id>', views.bloquear_liberar_quarto, name='liberar_quarto'), 
     
     path('quartos/tipos', views.tipos_quarto, name='tipos_quarto'), 
     path('quartos/tipos/cadastro', views.cadastrar_tipo_quarto, name='cadastrar_tipo_quarto'), 
