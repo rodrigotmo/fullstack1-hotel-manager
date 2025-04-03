@@ -27,7 +27,6 @@ class FuncionarioManager(BaseUserManager):
         return self.create_user(username, password, nome, **extra_fields)
 
 
-# Modelo de Funcionario
 class Funcionario(AbstractBaseUser):
     nome = models.CharField(max_length=255)
     username = models.CharField(max_length=255, unique=True)

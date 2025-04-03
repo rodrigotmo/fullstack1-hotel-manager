@@ -11,7 +11,7 @@ from django.http import HttpResponse
 def funcionarios(request):
     if request.user.is_authenticated and request.user.is_staff:
         funcionarios = Funcionario.objects.all()
-        return render(request, 'funcionarios.html', {'funcionarios': funcionarios})
+        return render(request, 'funcionario/funcionarios.html', {'funcionarios': funcionarios})
     else:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
@@ -21,7 +21,7 @@ def cadastrar_funcionario(request):
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
     if request.method == 'GET':
-        return render(request, 'cadastro.html')
+        return render(request, 'funcionario/cadastro.html')
     elif request.method == 'POST':
         username = request.POST.get('usuario')
         password = request.POST.get('senha')
@@ -55,7 +55,7 @@ def editar_funcionario(request,id):
     
     funcionario = get_object_or_404(Funcionario, id=id)
     if request.method == 'GET':
-        return render(request, 'cadastro.html', {'funcionario': funcionario})
+        return render(request, 'funcionario/cadastro.html', {'funcionario': funcionario})
     
     elif request.method == 'POST':
         nome = request.POST.get('nome')

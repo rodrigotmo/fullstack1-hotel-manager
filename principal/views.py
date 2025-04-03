@@ -11,7 +11,7 @@ from django.db.models import Q
 def login(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return render(request, 'home.html')
+            return redirect('home')
         else:    
             return render(request, 'login.html')
         
