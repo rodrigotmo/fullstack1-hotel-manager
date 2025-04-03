@@ -15,8 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from hotelapp import views
+from django.urls import include, path
+from principal import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,20 +27,7 @@ urlpatterns = [
     
     path('home', views.home, name='home'), 
     
-    path('funcionarios', views.funcionarios, name='funcionarios'), 
-    path('funcionarios/cadastro', views.cadastrar_funcionario, name='cadastrar_funcionario'), 
-    path('funcionarios/editar/<int:id>', views.editar_funcionario, name='editar_funcionario'), 
-    path('funcionarios/desativar/<int:id>', views.desativar_funcionario, name='desativar_funcionario'), 
-    path('funcionarios/ativar/<int:id>', views.ativar_funcionario, name='ativar_funcionario'),
-    
-    path('quartos', views.quartos, name='quartos'), 
-    path('quartos/cadastro', views.cadastrar_quarto, name='cadastrar_quarto'), 
-    path('quartos/editar/<int:id>', views.editar_quarto, name='editar_quarto'), 
-    path('quartos/remover/<int:id>', views.remover_quarto, name='remover_quarto'), 
-    path('quartos/bloquear/<int:id>', views.bloquear_liberar_quarto, name='bloquear_quarto'), 
-    path('quartos/liberar/<int:id>', views.bloquear_liberar_quarto, name='liberar_quarto'), 
-    
-    path('quartos/tipos', views.tipos_quarto, name='tipos_quarto'), 
-    path('quartos/tipos/cadastro', views.cadastrar_tipo_quarto, name='cadastrar_tipo_quarto'), 
-    path('quartos/tipos/editar/<int:id>', views.editar_tipo_quarto, name='editar_tipo_quarto'), 
+    path("funcionarios/", include("funcionarios.urls")),
+
+    path("quartos/", include("quartos.urls")),
 ]
