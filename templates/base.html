@@ -1,0 +1,163 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hotel</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap_5_0_2.min.css'%}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
+        <a class="navbar-brand" href={%url "home" %}>Hotel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav w-100">
+                <li class="nav-item active">
+                    <a class="nav-link" href={%url "home" %}>Home</a>
+                </li>
+                {% if user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link" href={%url "funcionarios" %}>Funcionario</a>
+                </li>
+                {%endif%}
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="drop-quartos" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Quartos
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="drop-quartos">
+                        {% if user.is_staff %}<a class="dropdown-item" href={%url "quartos" %}>Quartos</a>{%endif%}
+                        {% if user.is_staff %}<a class="dropdown-item" href={%url "tipos_quarto"%}>Tipos de Quartos</a>{%endif%}
+                        <a class="dropdown-item" href="#">Ocorrências</a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="drop-reservas" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Reservas
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="drop-reservas">
+                        <a class="dropdown-item" href="#">Reservar</a>
+                        <a class="dropdown-item" href="#">Ver reservas</a>
+                        <a class="dropdown-item" href="#">Check-in</a>
+                        <a class="dropdown-item" href="#">Check-out</a>
+                        <a class="dropdown-item" href="#">Relatórios</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href={%url "logout" %}>Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <ul class="alert alert-float" role="alert">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    <script>
+        function showAlert() {
+            const alert = document.querySelector('.alert-float');
+            alert.style.display = 'block';
+            setTimeout(function () {
+                alert.classList.add('fade-out');
+            }, 3000); 
+
+
+            setTimeout(function () {
+                alert.style.display = 'none'; 
+            }, 4000); 
+        }
+
+        // Chama a função para exibir o alerta
+        showAlert();
+    </script>
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
+</body>
+
+<script src="{% static 'js/bootstrap_5_0_2.bundle.min.js'%}"></script>
+
+</html>
+
+<style>
+    body {
+        background-color: #afb0b1;
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+    }
+
+    .alert-float {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        list-style-type: none;
+        transform: translateX(-50%);
+        z-index: 1050;
+        width: 30%;
+        opacity: 0;
+        text-align: center;
+        /* Inicia invisível */
+        animation: fadeIn 1s forwards;
+        /* Animação de fade in */
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+
+
+    .alert-float li {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        margin: 0px 0;
+        border-radius: 5px;
+        opacity: 1;
+    }
+
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    /* Classe para ativar o fade out */
+    .alert-float.fade-out {
+        animation: fadeOut 1s forwards;
+    }
+
+    .alert-float li.success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+</style>
