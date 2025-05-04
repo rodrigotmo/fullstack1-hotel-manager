@@ -8,9 +8,9 @@ erDiagram
     FUNCIONARIO {
         int id_funcionario PK
         string nome
-        string cargo
-        string login
+        string usuario
         string senha
+        boolean administrador
         boolean ativo
     }
 
