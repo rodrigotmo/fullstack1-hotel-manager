@@ -1,6 +1,5 @@
-# forms.py
 from django import forms
-from .models import TipoQuarto, Quarto
+from .models import TipoQuarto, Quarto, Ocorrencia
 
 class TipoQuartoForm(forms.ModelForm):
     class Meta:
@@ -27,3 +26,19 @@ class QuartoForm(forms.ModelForm):
             'capacidade': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_quarto': forms.Select(attrs={'class': 'form-control'}),
         }
+        
+        
+class OcorrenciaForm(forms.ModelForm):
+    class Meta:
+        model = Ocorrencia
+        fields = ['quarto', 'descricao']
+        widgets = {
+            'quarto': forms.Select(attrs={'class': 'form-control'}),
+            'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }
+
+    def clean_quarto(self):
+        quarto = self.cleaned_data.get('quarto')
+        if not Quarto.objects.filter(id=quarto.id).exists():
+            raise forms.ValidationError("Quarto inválido.")
+        return quarto

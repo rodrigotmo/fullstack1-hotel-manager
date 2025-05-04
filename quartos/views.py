@@ -1,23 +1,26 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from principal.models import Reserva
-from quartos.models import Quarto, TipoQuarto, StatusQuarto
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from quartos.models import Quarto, TipoQuarto, StatusQuarto, Ocorrencia
 from django.contrib import messages
 from django.db.models import Q
-from .forms import TipoQuartoForm, QuartoForm
+from django.utils.timezone import now
+from .forms import TipoQuartoForm, QuartoForm, OcorrenciaForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required
 def quartos(request):
-    if request.user.is_authenticated and request.user.is_staff:
+    if request.user.is_staff:
         quartos = Quarto.objects.exclude(status_quarto__nome_status_quarto='Removido').all()
         return render(request, 'quarto/quartos.html', {'quartos': quartos})
     else:
         messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
         return redirect('home')
     
+@login_required    
 def cadastrar_quarto(request):
-    if not request.user.is_authenticated or not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador.')
         return redirect('home')
 
@@ -37,9 +40,9 @@ def cadastrar_quarto(request):
         form = QuartoForm()
     return render(request, 'quarto/cadastro.html', {'form': form, 'quarto': None})
     
-
+@login_required
 def editar_quarto(request, id):
-    if not request.user.is_authenticated or not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador.')
         return redirect('home')
 
@@ -58,9 +61,9 @@ def editar_quarto(request, id):
         form = QuartoForm(instance=quarto)
     return render(request, 'quarto/cadastro.html', {'form': form, 'quarto': quarto})
 
-
+@login_required
 def bloquear_liberar_quarto(request, id):
-    if not request.user.is_authenticated and not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
     
@@ -80,8 +83,9 @@ def bloquear_liberar_quarto(request, id):
         messages.success(request, 'Status do quarto alterado com sucesso.')
         return redirect('quartos')
         
+@login_required        
 def remover_quarto(request,id):
-    if not request.user.is_authenticated and not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
     
@@ -98,17 +102,18 @@ def remover_quarto(request,id):
         return redirect('quartos')
 
 
-
+@login_required
 def tipos_quarto(request):
-    if request.user.is_authenticated and request.user.is_staff:
+    if request.user.is_staff:
         tipos_quarto = TipoQuarto.objects.all()
         return render(request, 'tipo/tipos.html', {'tipos_quarto': tipos_quarto})
     else:
         messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
         return redirect('home')
 
+@login_required
 def cadastrar_tipo_quarto(request):
-    if not request.user.is_authenticated or not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
 
@@ -128,8 +133,9 @@ def cadastrar_tipo_quarto(request):
     return render(request, 'tipo/cadastro.html', {'form': form, 'tipo_quarto': None})
 
 
+@login_required
 def editar_tipo_quarto(request, id):
-    if not request.user.is_authenticated or not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
 
@@ -149,3 +155,39 @@ def editar_tipo_quarto(request, id):
         form = TipoQuartoForm(instance=tipo_quarto)
 
     return render(request, 'tipo/cadastro.html', {'form': form, 'tipo_quarto': tipo_quarto})
+
+@login_required
+def ocorrencias(request):
+    ocorrencias = Ocorrencia.objects.select_related('quarto').all().order_by('-data_abertura_ocorrencia')
+    return render(request, 'ocorrencias/ocorrencias.html', {'ocorrencias': ocorrencias})
+
+@login_required
+def cadastrar_ocorrencia(request):
+    if request.method == 'POST':
+        form = OcorrenciaForm(request.POST)
+        if form.is_valid():
+            ocorrencia = form.save(commit=False)
+            ocorrencia.data_abertura_ocorrencia = now()
+            ocorrencia.finalizada = False
+            ocorrencia.save()
+            messages.success(request, 'Ocorrência registrada com sucesso.')
+            return redirect('ocorrencias')
+        else:
+            messages.error(request, 'Corrija os erros abaixo.')
+    else:
+        form = OcorrenciaForm()
+    return render(request, 'ocorrencias/cadastro.html', {'form': form})
+
+@login_required
+def finalizar_ocorrencia(request, id):
+    ocorrencia = get_object_or_404(Ocorrencia, id=id)
+
+    if ocorrencia.finalizada:
+        messages.info(request, 'Esta ocorrência já está finalizada.')
+    else:
+        ocorrencia.finalizada = True
+        ocorrencia.data_fechamento_ocorrencia = now()
+        ocorrencia.save()
+        messages.success(request, f'Ocorrência #{ocorrencia.id} finalizada com sucesso.')
+
+    return redirect('ocorrencias')

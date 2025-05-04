@@ -40,7 +40,7 @@
                     <div class="dropdown-menu" aria-labelledby="drop-quartos">
                         {% if user.is_staff %}<a class="dropdown-item" href={%url "quartos" %}>Quartos</a>{%endif%}
                         {% if user.is_staff %}<a class="dropdown-item" href={%url "tipos_quarto"%}>Tipos de Quartos</a>{%endif%}
-                        <a class="dropdown-item" href="#">Ocorrências</a>
+                        <a class="dropdown-item" href="{%url "ocorrencias"%}">Ocorrências</a>
                     </div>
                 </li>
 

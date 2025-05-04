@@ -43,8 +43,8 @@ class Quarto(models.Model):
 
 class Ocorrencia(models.Model):
     quarto = models.ForeignKey(Quarto, on_delete=models.CASCADE)
-    data_abertura_ocorrencia = models.DateField()
-    data_fechamento_ocorrencia = models.DateField(null=True, blank=True)
+    data_abertura_ocorrencia = models.DateTimeField()
+    data_fechamento_ocorrencia = models.DateTimeField(null=True, blank=True)
     descricao = models.TextField()
     finalizada = models.BooleanField(default=False)
 

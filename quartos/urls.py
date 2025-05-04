@@ -12,4 +12,8 @@ urlpatterns = [
     path('tipos', views.tipos_quarto, name='tipos_quarto'), 
     path('tipos/cadastro', views.cadastrar_tipo_quarto, name='cadastrar_tipo_quarto'), 
     path('tipos/editar/<int:id>', views.editar_tipo_quarto, name='editar_tipo_quarto'), 
+    
+    path('ocorrencias', views.ocorrencias, name='ocorrencias'),    
+    path('ocorrencias/cadastro', views.cadastrar_ocorrencia, name='cadastrar_ocorrencia'),
+    path('ocorrencias/finalizar/<int:id>', views.finalizar_ocorrencia, name='finalizar_ocorrencia'),
 ]
