@@ -2,41 +2,21 @@
 
 {% block content %}
 <div class="container mt-5">
-    <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%; margin: 0 auto;">
-
-        <form action="{% if quarto %}{% url 'editar_quarto' quarto.id %}{% else %}{% url 'cadastrar_quarto' %}{% endif %}" method="post">
+    <div class="card shadow-lg p-4" style="max-width: 500px; margin: 0 auto;">
+        <form method="post">
             {% csrf_token %}
             <h1 class="text-center mb-4">
-                {% if quarto %}Edição de Quarto{% else %}Cadastro de Quarto{% endif %}
+                {% if quarto %}Editar Quarto{% else %}Cadastrar Quarto{% endif %}
             </h1>
 
-            <div class="mb-3">
-                <label for="numero" class="form-label">Número:</label>
-                <input type="text" id="numero" name="numero" class="form-control" value="{% if quarto %}{{ quarto.numero }}{% endif %}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="capacidade" class="form-label">Capacidade:</label>
-                <input type="text" id="capacidade" name="capacidade" class="form-control" value="{% if quarto %}{{ quarto.capacidade }}{% endif %}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="tipo_quarto" class="form-label">Tipo:</label>
-                <select name="tipo_quarto" id="tipo_quarto" class="form-select" required>
-                    {% for tipo in tipos_quarto %}
-                        <option value="{{ tipo.id }}" {% if tipo.id == quarto.tipo_quarto.id %}selected{% endif %}>
-                            {{ tipo.nome_tipo_quarto }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+            {{ form.as_p }}
 
             <div class="d-grid gap-2">
-                <input type="submit" class="btn btn-primary" value="{% if quarto %}Salvar Alterações{% else %}Cadastrar{% endif %}">
+                <button type="submit" class="btn btn-primary">
+                    {% if quarto %}Salvar Alterações{% else %}Cadastrar{% endif %}
+                </button>
             </div>
         </form>
-
     </div>
 </div>
-{% endblock content %}
-
+{% endblock %}

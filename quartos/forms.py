@@ -17,3 +17,13 @@ class TipoQuartoForm(forms.ModelForm):
             }),
         }
 
+
+class QuartoForm(forms.ModelForm):
+    class Meta:
+        model = Quarto
+        fields = ['numero', 'capacidade', 'tipo_quarto']
+        widgets = {
+            'numero': forms.TextInput(attrs={'class': 'form-control'}),
+            'capacidade': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tipo_quarto': forms.Select(attrs={'class': 'form-control'}),
+        }

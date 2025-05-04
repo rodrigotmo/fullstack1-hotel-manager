@@ -20,6 +20,6 @@ class FuncionarioForm(forms.ModelForm):
         fields = ['nome', 'username', 'senha', 'administrador']
 
         widgets = {
-            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome'}),
-            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome de usuário'}),
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome', 'required': True}),
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome de usuário', 'required': True}),
         }

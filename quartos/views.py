@@ -4,7 +4,7 @@ from quartos.models import Quarto, TipoQuarto, StatusQuarto
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from django.db.models import Q
-from .forms import TipoQuartoForm
+from .forms import TipoQuartoForm, QuartoForm
 
 # Create your views here.
 
@@ -17,73 +17,48 @@ def quartos(request):
         return redirect('home')
     
 def cadastrar_quarto(request):
-    if not request.user.is_authenticated and request.user.is_staff:
-        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+    if not request.user.is_authenticated or not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador.')
         return redirect('home')
-    
-    if request.method == 'GET':
-        tipos_quarto = TipoQuarto.objects.all()
-        return render(request, 'quarto/cadastro.html', {'tipos_quarto': tipos_quarto, 'quarto': None})
-    elif request.method == 'POST':
-        numero = request.POST.get('numero')
-        capacidade = request.POST.get('capacidade')
-        tipo = request.POST.get('tipo_quarto')
-        status = 1  # Status padrão para "Liberado"
-        
-        quarto = Quarto.objects.filter(numero=numero).first()
-        if quarto:
-            messages.error(request, 'Quarto já cadastrado')
+
+    if request.method == 'POST':
+        form = QuartoForm(request.POST)
+        if form.is_valid():
+            numero = form.cleaned_data['numero']
+            if Quarto.objects.filter(numero=numero).exists():
+                messages.error(request, 'Quarto já cadastrado.')
+                return redirect('quartos')
+            quarto = form.save(commit=False)
+            quarto.status_quarto_id = 1  # Liberado
+            quarto.save()
+            messages.success(request, 'Quarto cadastrado com sucesso.')
             return redirect('quartos')
-        elif numero and tipo and capacidade and status:
-            tipo = TipoQuarto.objects.filter(id=tipo).first()
-            if tipo:
-                quarto = Quarto.objects.create(
-                    numero=numero,
-                    capacidade=capacidade,
-                    tipo_quarto_id=tipo.id,
-                    status_quarto_id=status,
-                )
-                quarto.save()
-                messages.success(request, 'Quarto cadastrado com sucesso.')
-                return redirect('quartos')
-            else:
-                messages.error(request, 'Tipo de quarto inválido')
-                return redirect('quartos')
-        else:
-            messages.error(request, 'Número, Tipo e Capacidade são obrigatórios!')  
-            return redirect('cadastrar_quarto')
-        
-def editar_quarto(request,id):
-    if not request.user.is_authenticated and not request.user.is_staff:
-        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+    else:
+        form = QuartoForm()
+    return render(request, 'quarto/cadastro.html', {'form': form, 'quarto': None})
+    
+
+def editar_quarto(request, id):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador.')
         return redirect('home')
-    
+
     quarto = get_object_or_404(Quarto, id=id)
-    if request.method == 'GET':
-        tipos_quarto = TipoQuarto.objects.all()
-        return render(request, 'quarto/cadastro.html', {'quarto': quarto, 'tipos_quarto': tipos_quarto})
-    
-    elif request.method == 'POST':
-        numero = request.POST.get('numero')
-        capacidade = request.POST.get('capacidade')
-        tipo = request.POST.get('tipo_quarto')
-        outro_quarto = Quarto.objects.exclude(id=id).filter(numero=numero).first()
-        if numero and capacidade and tipo and outro_quarto is None:
-            tipo = TipoQuarto.objects.filter(id=tipo).first()
-            if tipo:
-                quarto.numero = numero
-                quarto.capacidade = capacidade
-                quarto.tipo_quarto_id = tipo
-                quarto.save()
-                messages.success(request, 'Quarto atualizado com sucesso.')
-                return redirect('quartos')
-            else:
-                messages.error(request, 'Tipo de quarto inválido')
-                return redirect('quartos')
-        else:
-            messages.error(request, "Número deve ser único, Tipo e Capacidade são obrigatórios!")
-            return redirect('editar_quarto', id=id)
-  
+    if request.method == 'POST':
+        form = QuartoForm(request.POST, instance=quarto)
+        if form.is_valid():
+            numero = form.cleaned_data['numero']
+            if Quarto.objects.exclude(id=id).filter(numero=numero).exists():
+                messages.error(request, 'Número de quarto já utilizado.')
+                return redirect('editar_quarto', id=id)
+            form.save()
+            messages.success(request, 'Quarto atualizado com sucesso.')
+            return redirect('quartos')
+    else:
+        form = QuartoForm(instance=quarto)
+    return render(request, 'quarto/cadastro.html', {'form': form, 'quarto': quarto})
+
+
 def bloquear_liberar_quarto(request, id):
     if not request.user.is_authenticated and not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
