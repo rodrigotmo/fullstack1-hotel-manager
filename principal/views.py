@@ -1,31 +1,31 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from principal.models import Reserva, Cliente, StatusReserva
 from funcionarios.models import Funcionario
 from quartos.models import Quarto, StatusQuarto, Ocorrencia
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
-from django.db.models import Q
+from .forms import LoginForm
 
-# Create your views here.
 def login(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
             return redirect('home')
-        else:    
-            return render(request, 'login.html')
-        
+        form = LoginForm()
+        return render(request, 'login.html', {'form': form})
+    
     elif request.method == 'POST':
-        usuario = request.POST.get('usuario')
-        senha = request.POST.get('senha')
-        funcionario = authenticate(request, username=usuario, password=senha)
-        if funcionario is not None and funcionario.ativo:
-            auth_login(request, funcionario)
-            messages.success(request, 'Bem-vindo(a), {}'.format(request.user.username))
-            return redirect('home')
-        else:
-            messages.error(request, 'Usuário ou senha inválidos.')
-            return redirect('login')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            usuario = form.cleaned_data['usuario']
+            senha = form.cleaned_data['senha']
+            funcionario = authenticate(request, username=usuario, password=senha)
+            if funcionario is not None and funcionario.ativo:
+                auth_login(request, funcionario)
+                messages.success(request, f'Bem-vindo(a), {funcionario.username}')
+                return redirect('home')
+            else:
+                messages.error(request, 'Usuário ou senha inválidos.')
+        return render(request, 'login.html', {'form': form})
      
 def logout(request):
     if request.user.is_authenticated:
