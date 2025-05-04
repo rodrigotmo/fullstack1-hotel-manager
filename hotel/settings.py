@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'principal.apps.PrincipalConfig', 
     'funcionarios.apps.FuncionariosConfig',
-    'quartos.apps.QuartosConfig'
+    'quartos.apps.QuartosConfig',
+    'clientes.apps.ClientesConfig',
+    'reservas.apps.ReservasConfig'
 ]
 
 MIDDLEWARE = [

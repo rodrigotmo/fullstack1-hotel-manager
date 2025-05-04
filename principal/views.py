@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
-from principal.models import Reserva, Cliente, StatusReserva
+from reservas.models import Reserva, StatusReserva
+from clientes.models import Cliente
 from funcionarios.models import Funcionario
 from quartos.models import Quarto, StatusQuarto, Ocorrencia
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout

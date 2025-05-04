@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from principal.models import Reserva
+from reservas.models import Reserva
 from quartos.models import Quarto, TipoQuarto, StatusQuarto, Ocorrencia
 from django.contrib import messages
 from django.db.models import Q
