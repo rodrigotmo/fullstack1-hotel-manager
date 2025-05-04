@@ -1,5 +1,52 @@
 @charset "UTF-8";
 
+
+
+.custom-table {
+    border-collapse: separate !important;
+    border-spacing: 0 10px !important;
+}
+
+.custom-table th, .custom-table td {
+    padding: 12px 15px !important;
+    border: 1px solid #ddd !important;
+    font-size: 16px !important;
+}
+
+.custom-table {
+    border-radius: 15px !important;
+    overflow: hidden !important;
+}
+
+.custom-table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9 !important;
+}
+
+.custom-table tbody tr:nth-child(even) {
+    background-color: #f1f1f1 !important;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #e2e6ea !important;
+}
+
+.custom-table .btn {
+    padding: 5px 10px !important;
+    font-size: 14px !important;
+    border-radius: 5px !important;
+}
+
+.custom-table .btn-primary {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.custom-table td {
+    text-align: center !important;
+    font-style: italic !important;
+    color: #292929 !important;
+}
+
 /*!
  * Bootstrap v5.0.2 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors
@@ -4905,6 +4952,14 @@ fieldset:disabled .btn {
     padding: 1rem 1rem
 }
 
+.card-body {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .card-title {
     margin-bottom: .5rem
 }
@@ -4931,6 +4986,11 @@ fieldset:disabled .btn {
     margin-bottom: 0;
     background-color: rgba(0, 0, 0, .03);
     border-bottom: 1px solid rgba(0, 0, 0, .125)
+}
+
+.card-header {
+    background-color: #48494b;
+    color: white;
 }
 
 .card-header:first-child {
@@ -11718,5 +11778,6 @@ fieldset:disabled .btn {
         display: none !important
     }
 }
+
 
 /*# sourceMappingURL=bootstrap.min.css.map */

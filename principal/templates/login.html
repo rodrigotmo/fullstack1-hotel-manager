@@ -37,20 +37,24 @@
             <form class="bg-white rounded shadow-5-strong p-5" action="{% url 'login' %}" method="post">
               {% csrf_token %}
               <h2 class="text-uppercase text-center mb-5">gerenciamento hotel</h2>
-
-              <div class="form-outline mb-4" data-mdb-input-init>
-                <input type="text" id="usuario" name="usuario" class="form-control" />
-                <label class="form-label" for="senha">Usuário</label>
+            
+              {{ form.non_field_errors }}
+            
+              <div class="form-outline mb-4">
+                {{ form.usuario.label_tag }}
+                {{ form.usuario }}
+                {{ form.usuario.errors }}
               </div>
-
-
-              <div class="form-outline mb-4" data-mdb-input-init>
-                <input type="password" id="senha" name="senha" class="form-control" />
-                <label class="form-label" for="senha">Senha</label>
+            
+              <div class="form-outline mb-4">
+                {{ form.senha.label_tag }}
+                {{ form.senha }}
+                {{ form.senha.errors }}
               </div>
-
-              <button type="submit" class="btn btn-primary btn-block form-control" data-mdb-ripple-init>Login</button>
+            
+              <button type="submit" class="btn btn-primary btn-block form-control">Login</button>
             </form>
+            
           </div>
         </div>
       </div>

@@ -1,4 +1,6 @@
+{% extends "base.html" %}
 
+{% block content %}
 
 
 <div class="container mt-5">
@@ -53,52 +55,6 @@
     </div>
 </div>
 
-<style>
-.custom-table {
-    border-collapse: separate;
-    border-spacing: 0 10px;
-}
-
-.custom-table th, .custom-table td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-}
-
-.custom-table {
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-.custom-table tbody tr:nth-child(odd) {
-    background-color: #f9f9f9;
-}
-
-.custom-table tbody tr:nth-child(even) {
-    background-color: #f1f1f1;
-}
-
-.custom-table tbody tr:hover {
-    background-color: #e2e6ea;
-}
-
-.custom-table .btn {
-    padding: 5px 10px;
-    font-size: 14px;
-    border-radius: 5px;
-}
-
-.custom-table .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.custom-table td {
-    text-align: center;
-    font-style: italic;
-    color: #292929;
-}
-</style>
 
 <script>
     document.getElementById('searchInput').addEventListener('keyup', function() {
@@ -125,3 +81,4 @@
     });
 </script>
 
+{% endblock content %}
