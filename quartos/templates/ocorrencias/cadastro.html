@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4" style="max-width: 600px; margin: 0 auto;">
+        <h1 class="text-center mb-4">Cadastro de Ocorrência</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-3">
+                <label for="id_quarto" class="form-label">Quarto</label>
+                {{ form.quarto }}
+                {% for error in form.quarto.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label for="id_descricao" class="form-label">Descrição</label>
+                {{ form.descricao }}
+                {% for error in form.descricao.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Registrar Ocorrência</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

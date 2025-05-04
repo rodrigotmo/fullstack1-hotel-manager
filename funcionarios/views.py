@@ -1,21 +1,22 @@
 from django.shortcuts import render
 from funcionarios.models import Funcionario
-from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import FuncionarioForm
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def funcionarios(request):
-    if request.user.is_authenticated and request.user.is_staff:
+    if request.user.is_staff:
         funcionarios = Funcionario.objects.all()
         return render(request, 'funcionario/funcionarios.html', {'funcionarios': funcionarios})
     else:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
 
+@login_required
 def cadastrar_funcionario(request):
-    if not request.user.is_authenticated or not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
 
@@ -40,9 +41,9 @@ def cadastrar_funcionario(request):
 
     return render(request, 'funcionario/cadastro.html', {'form': form})
 
-
+@login_required
 def editar_funcionario(request, id):
-    if not request.user.is_authenticated or not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
 
@@ -69,8 +70,9 @@ def editar_funcionario(request, id):
 
     return render(request, 'funcionario/cadastro.html', {'form': form, 'funcionario': funcionario})
 
+@login_required
 def desativar_funcionario(request, id):
-    if not request.user.is_authenticated and not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
     funcionario = get_object_or_404(Funcionario, id=id)
@@ -79,8 +81,9 @@ def desativar_funcionario(request, id):
     messages.success(request, "Funcionário desativado com sucesso!")
     return redirect('funcionarios')
 
+@login_required
 def ativar_funcionario(request, id):
-    if not request.user.is_authenticated and not request.user.is_staff:
+    if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
     funcionario = get_object_or_404(Funcionario, id=id)
