@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'principal', 
-    'funcionarios',
-    'quartos'
+    'principal.apps.PrincipalConfig', 
+    'funcionarios.apps.FuncionariosConfig',
+    'quartos.apps.QuartosConfig'
 ]
 
 MIDDLEWARE = [
