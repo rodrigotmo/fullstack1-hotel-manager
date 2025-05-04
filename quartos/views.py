@@ -4,6 +4,7 @@ from quartos.models import Quarto, TipoQuarto, StatusQuarto
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from django.db.models import Q
+from .forms import TipoQuartoForm
 
 # Create your views here.
 
@@ -130,55 +131,46 @@ def tipos_quarto(request):
     else:
         messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
         return redirect('home')
-    
+
 def cadastrar_tipo_quarto(request):
-    if not request.user.is_authenticated and request.user.is_staff:
+    if not request.user.is_authenticated or not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
-    if request.method == 'GET':
-        return render(request, 'tipo/cadastro.html', {'tipo_quarto': None})
-    elif request.method == 'POST':
-        nome = request.POST.get('nome')
-        
-        tipo_quarto = TipoQuarto.objects.filter(nome_tipo_quarto=nome).first()
-        if tipo_quarto:
-            messages.error(request, 'Tipo Quarto já cadastrado')
+
+    if request.method == 'POST':
+        form = TipoQuartoForm(request.POST)
+        if form.is_valid():
+            nome = form.cleaned_data['nome_tipo_quarto']
+            if TipoQuarto.objects.filter(nome_tipo_quarto=nome).exists():
+                messages.error(request, 'Tipo de Quarto já cadastrado.')
+                return redirect('tipos_quarto')
+            form.save()
+            messages.success(request, 'Tipo de Quarto cadastrado com sucesso.')
             return redirect('tipos_quarto')
-        elif nome:
-                tipo_quarto = TipoQuarto.objects.create(
-                   nome_tipo_quarto=nome,
-                )
-                tipo_quarto.save()
-                messages.success(request, 'Tipo Quarto cadastrado com sucesso.')
-                return redirect('tipos_quarto')
-        else:
-            messages.error(request, 'Nome é obrigatório!')  
-            return redirect('tipos_quarto') 
-        
+    else:
+        form = TipoQuartoForm()
+
+    return render(request, 'tipo/cadastro.html', {'form': form, 'tipo_quarto': None})
+
+
 def editar_tipo_quarto(request, id):
-    
-    if not request.user.is_authenticated and request.user.is_staff:
+    if not request.user.is_authenticated or not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
-    
+
     tipo_quarto = get_object_or_404(TipoQuarto, Q(id=id) & ~Q(nome_tipo_quarto__in=['Simples', 'Duplo', 'Suite']))
-    if request.method == 'GET':
-        return render(request, 'tipo/cadastro.html', {'tipo_quarto': tipo_quarto})
-    
-    elif request.method == 'POST':
-        nome = request.POST.get('nome')
-        
-        outro_tipo_quarto = TipoQuarto.objects.exclude(id=id).filter(nome_tipo_quarto=nome).first()
-        if outro_tipo_quarto:
-            messages.error(request, 'Tipo Quarto já cadastrado')
-            return redirect('editar_tipo_quarto', id=id)
-        elif nome:
-                tipo_quarto.nome_tipo_quarto=nome
-                tipo_quarto.save()
-                messages.success(request, 'Tipo Quarto alterado com sucesso.')
-                return redirect('tipos_quarto')
-        else:
-            messages.error(request, 'Nome é obrigatório!')  
-            return redirect('editar_tipo_quarto', id=id)
-        
-        
+
+    if request.method == 'POST':
+        form = TipoQuartoForm(request.POST, instance=tipo_quarto)
+        if form.is_valid():
+            nome = form.cleaned_data['nome_tipo_quarto']
+            if TipoQuarto.objects.exclude(id=tipo_quarto.id).filter(nome_tipo_quarto=nome).exists():
+                messages.error(request, 'Tipo de Quarto já cadastrado.')
+                return redirect('editar_tipo_quarto', id=tipo_quarto.id)
+            form.save()
+            messages.success(request, 'Tipo de Quarto alterado com sucesso.')
+            return redirect('tipos_quarto')
+    else:
+        form = TipoQuartoForm(instance=tipo_quarto)
+
+    return render(request, 'tipo/cadastro.html', {'form': form, 'tipo_quarto': tipo_quarto})
