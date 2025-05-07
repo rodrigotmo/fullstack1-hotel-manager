@@ -17,6 +17,21 @@ class StatusReserva(models.Model):
         for status in statuses:
             if not StatusReserva.objects.filter(nome_status_reserva=status).exists():
                 StatusReserva.objects.create(nome_status_reserva=status)
+    @classmethod
+    def RESERVADA(cls):
+        return cls.objects.get(nome_status_reserva='Reservada')
+
+    @classmethod
+    def EM_ANDAMENTO(cls):
+        return cls.objects.get(nome_status_reserva='Em andamento')
+
+    @classmethod
+    def FINALIZADA(cls):
+        return cls.objects.get(nome_status_reserva='Finalizada')
+
+    @classmethod
+    def CANCELADA(cls):
+        return cls.objects.get(nome_status_reserva='Cancelada')
 
 
 class Reserva(models.Model):

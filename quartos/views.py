@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from reservas.models import Reserva
+from reservas.models import Reserva, StatusReserva
 from quartos.models import Quarto, TipoQuarto, StatusQuarto, Ocorrencia
 from django.contrib import messages
 from django.db.models import Q
@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def quartos(request):
     if request.user.is_staff:
-        quartos = Quarto.objects.exclude(status_quarto__nome_status_quarto='Removido').all()
+        quartos = Quarto.objects.exclude(status_quarto=StatusQuarto.REMOVIDO()).all()
         return render(request, 'quarto/quartos.html', {'quartos': quartos})
     else:
         messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
@@ -32,7 +32,7 @@ def cadastrar_quarto(request):
                 messages.error(request, 'Quarto já cadastrado.')
                 return redirect('quartos')
             quarto = form.save(commit=False)
-            quarto.status_quarto_id = 1  # Liberado
+            quarto.status_quarto = StatusQuarto.LIBERADO()
             quarto.save()
             messages.success(request, 'Quarto cadastrado com sucesso.')
             return redirect('quartos')
@@ -68,15 +68,15 @@ def bloquear_liberar_quarto(request, id):
         return redirect('home')
     
     quarto = get_object_or_404(Quarto, id=id) 
-    reservas = Reserva.objects.filter(Q(quarto_id=quarto) & (Q(status_reserva__nome_status_reserva='Reservada') | Q(status_reserva__nome_status_reserva='Em andamento'))).first()
+    reservas = Reserva.objects.filter(Q(quarto_id=quarto) & (Q(status_reserva=StatusReserva.RESERVADA()) | Q(status_reserva=StatusReserva.EM_ANDAMENTO()))).first()
     if reservas:
         messages.error(request, 'Status do quarto não pode ser mudado pois possui reservas ativas.')
         return redirect('quartos')
     else:
-        if quarto.status_quarto.nome_status_quarto == 'Indisponível':
-            quarto.status_quarto = StatusQuarto.objects.get(nome_status_quarto='Liberado')
+        if quarto.status_quarto == StatusQuarto.INDISPONIVEL():
+            quarto.status_quarto = StatusQuarto.LIBERADO()
         else:
-            quarto.status_quarto = StatusQuarto.objects.get(nome_status_quarto='Indisponível')
+            quarto.status_quarto = StatusQuarto.INDISPONIVEL()
             
         quarto.save()
         messages.success(request, quarto.status_quarto)
@@ -95,7 +95,7 @@ def remover_quarto(request,id):
         messages.error(request, 'Quarto não pode ser removido, pois possui reservas ativas.')
         return redirect('quartos')
     else:
-        quarto.status_quarto = StatusQuarto.objects.get(nome_status_quarto='Removido')
+        quarto.status_quarto = StatusQuarto.REMOVIDO()
         quarto.numero = quarto.numero + ' - Removido'
         quarto.save()
         messages.success(request, 'Quarto removido com sucesso.')

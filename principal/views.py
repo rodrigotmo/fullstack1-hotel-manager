@@ -36,13 +36,13 @@ def logout(request):
       
 @login_required      
 def home(request):
-    status_liberado = StatusQuarto.objects.get(nome_status_quarto='Liberado')
-    status_indisponivel = StatusQuarto.objects.get(nome_status_quarto='Indisponível')
-    status_em_uso = StatusQuarto.objects.get(nome_status_quarto='Em uso')
-    status_reservada = StatusReserva.objects.get(nome_status_reserva='Reservada')
-    status_em_andamento = StatusReserva.objects.get(nome_status_reserva='Em andamento')
-    status_finalizada = StatusReserva.objects.get(nome_status_reserva='Finalizada')
-    status_cancelada = StatusReserva.objects.get(nome_status_reserva='Cancelada')
+    status_liberado = StatusQuarto.LIBERADO()
+    status_indisponivel = StatusQuarto.INDISPONIVEL()
+    status_em_uso = StatusQuarto.EM_USO()
+    status_reservada = StatusReserva.RESERVADA()
+    status_em_andamento = StatusReserva.EM_ANDAMENTO()
+    status_finalizada = StatusReserva.FINALIZADA()
+    status_cancelada = StatusReserva.CANCELADA()
     dados_dashboard = {
         'qtd_funcionarios': Funcionario.objects.all().count(),
         'qtd_funcionarios_ativos': Funcionario.objects.filter(ativo=True).count(),

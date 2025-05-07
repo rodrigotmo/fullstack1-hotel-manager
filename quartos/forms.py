@@ -11,8 +11,7 @@ class TipoQuartoForm(forms.ModelForm):
         widgets = {
             'nome_tipo_quarto': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Digite o nome do tipo de quarto',
-                'required': True
+                'placeholder': 'Digite o nome do tipo de quarto'
             }),
         }
 
