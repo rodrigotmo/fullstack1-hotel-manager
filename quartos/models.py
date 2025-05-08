@@ -10,13 +10,27 @@ class StatusQuarto(models.Model):
 
     def __str__(self):
         return self.nome_status_quarto
-    
+
     @staticmethod
     def create_default_values():
-        statuses = ['Liberado', 'Em uso', 'Indisponível', 'Removido']
-        for status in statuses:
-            if not StatusQuarto.objects.filter(nome_status_quarto=status).exists():
-                StatusQuarto.objects.create(nome_status_quarto=status)
+        for status in ['Liberado', 'Em uso', 'Indisponível', 'Removido']:
+            StatusQuarto.objects.get_or_create(nome_status_quarto=status)
+
+    @classmethod
+    def LIBERADO(cls):
+        return cls.objects.get(nome_status_quarto='Liberado')
+
+    @classmethod
+    def EM_USO(cls):
+        return cls.objects.get(nome_status_quarto='Em uso')
+
+    @classmethod
+    def INDISPONIVEL(cls):
+        return cls.objects.get(nome_status_quarto='Indisponível')
+
+    @classmethod
+    def REMOVIDO(cls):
+        return cls.objects.get(nome_status_quarto='Removido')
  
 class TipoQuarto(models.Model):
     nome_tipo_quarto = models.CharField(max_length=255)

@@ -29,10 +29,10 @@
                             <td>{{ ocorrencia.id }}</td>
                             <td>{{ ocorrencia.quarto.numero }}</td>
                             <td>{{ ocorrencia.descricao }}</td>
-                            <td>{{ ocorrencia.data_abertura_ocorrencia|date:"d/m/Y" }}</td>
+                            <td>{{ ocorrencia.data_abertura_ocorrencia|date:"d/m/Y H:i:s" }}</td>
                             <td>
                                 {% if ocorrencia.finalizada %}
-                                    Finalizada
+                                    Finalizada em {{ ocorrencia.data_fechamento_ocorrencia|date:"d/m/Y H:i:s" }}
                                 {% else %}
                                     Aberta
                                 {% endif %}

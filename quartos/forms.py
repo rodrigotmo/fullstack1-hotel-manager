@@ -1,5 +1,5 @@
 from django import forms
-from .models import TipoQuarto, Quarto, Ocorrencia
+from .models import TipoQuarto, Quarto, Ocorrencia, StatusQuarto
 
 class TipoQuartoForm(forms.ModelForm):
     class Meta:
@@ -11,8 +11,7 @@ class TipoQuartoForm(forms.ModelForm):
         widgets = {
             'nome_tipo_quarto': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Digite o nome do tipo de quarto',
-                'required': True
+                'placeholder': 'Digite o nome do tipo de quarto'
             }),
         }
 
@@ -36,6 +35,14 @@ class OcorrenciaForm(forms.ModelForm):
             'quarto': forms.Select(attrs={'class': 'form-control'}),
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            status_removido = StatusQuarto.REMOVIDO()
+            self.fields['quarto'].queryset = Quarto.objects.exclude(status_quarto=status_removido)
+        except StatusQuarto.DoesNotExist:
+            self.fields['quarto'].queryset = Quarto.objects.all()
 
     def clean_quarto(self):
         quarto = self.cleaned_data.get('quarto')

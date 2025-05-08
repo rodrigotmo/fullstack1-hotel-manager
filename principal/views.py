@@ -36,13 +36,14 @@ def logout(request):
       
 @login_required      
 def home(request):
-    status_liberado = StatusQuarto.objects.get(nome_status_quarto='Liberado')
-    status_indisponivel = StatusQuarto.objects.get(nome_status_quarto='Indisponível')
-    status_em_uso = StatusQuarto.objects.get(nome_status_quarto='Em uso')
-    status_reservada = StatusReserva.objects.get(nome_status_reserva='Reservada')
-    status_em_andamento = StatusReserva.objects.get(nome_status_reserva='Em andamento')
-    status_finalizada = StatusReserva.objects.get(nome_status_reserva='Finalizada')
-    status_cancelada = StatusReserva.objects.get(nome_status_reserva='Cancelada')
+    status_quarto_liberado = StatusQuarto.LIBERADO()
+    status_quarto_indisponivel = StatusQuarto.INDISPONIVEL()
+    status_quarto_em_uso = StatusQuarto.EM_USO()
+    status_quarto_removido = StatusQuarto.REMOVIDO()
+    status_reserva_reservada = StatusReserva.RESERVADA()
+    status_reserva_em_andamento = StatusReserva.EM_ANDAMENTO()
+    status_reserva_finalizada = StatusReserva.FINALIZADA()
+    status_reserva_cancelada = StatusReserva.CANCELADA()
     dados_dashboard = {
         'qtd_funcionarios': Funcionario.objects.all().count(),
         'qtd_funcionarios_ativos': Funcionario.objects.filter(ativo=True).count(),
@@ -53,14 +54,15 @@ def home(request):
         'qtd_clientes_inativos': Cliente.objects.filter(ativo=False).count(),
         
         'qtd_quartos': Quarto.objects.all().count(),
-        'qtd_quartos_disponivel': Quarto.objects.filter(status_quarto=status_liberado).count(),
-        'qtd_quartos_indisponivel': Quarto.objects.filter(status_quarto=status_indisponivel).count(),
-        'qtd_quartos_em_uso': Quarto.objects.filter(status_quarto=status_em_uso).count(),
+        'qtd_quartos_disponivel': Quarto.objects.filter(status_quarto=status_quarto_liberado).count(),
+        'qtd_quartos_indisponivel': Quarto.objects.filter(status_quarto=status_quarto_indisponivel).count(),
+        'qtd_quartos_em_uso': Quarto.objects.filter(status_quarto=status_quarto_em_uso).count(),
+        'qtd_quartos_removido': Quarto.objects.filter(status_quarto=status_quarto_removido).count(),
         
         'qtd_reservas': Reserva.objects.all().count(),
-        'qtd_reservas_ativas': Reserva.objects.filter(status_reserva__in=[status_reservada, status_em_andamento]).count(),
-        'qtd_reservas_finalizadas': Reserva.objects.filter(status_reserva=status_finalizada).count(),
-        'qtd_reservas_canceladas': Reserva.objects.filter(status_reserva=status_cancelada).count(),
+        'qtd_reservas_ativas': Reserva.objects.filter(status_reserva__in=[status_reserva_reservada, status_reserva_em_andamento]).count(),
+        'qtd_reservas_finalizadas': Reserva.objects.filter(status_reserva=status_reserva_finalizada).count(),
+        'qtd_reservas_canceladas': Reserva.objects.filter(status_reserva=status_reserva_cancelada).count(),
         
         'qtd_ocorrencias': Ocorrencia.objects.all().count(),
         'qtd_ocorrencias_ativas': Ocorrencia.objects.filter(finalizada=False).count(),
