@@ -28,10 +28,12 @@
                 </li>
                 {% if user.is_staff %}
                 <li class="nav-item">
-                    <a class="nav-link" href={%url "funcionarios" %}>Funcionario</a>
+                    <a class="nav-link" href={%url "funcionarios" %}>Funcionarios</a>
                 </li>
                 {%endif%}
-
+                <li class="nav-item">
+                    <a class="nav-link" href={%url "clientes" %}>Clientes</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="drop-quartos" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
