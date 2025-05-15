@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from reservas.models import Reserva, StatusReserva
-from quartos.models import Quarto, TipoQuarto, StatusQuarto, Ocorrencia
+from quartos.models import Quarto, TipoQuarto, StatusQuarto, Ocorrencia, TarifaTipoQuarto
 from django.contrib import messages
 from django.db.models import Q
 from django.utils.timezone import now
-from .forms import TipoQuartoForm, QuartoForm, OcorrenciaForm
+from .forms import TarifaTipoQuartoForm, TipoQuartoForm, QuartoForm, OcorrenciaForm
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -191,3 +191,80 @@ def finalizar_ocorrencia(request, id):
         messages.success(request, f'Ocorrência #{ocorrencia.id} finalizada com sucesso.')
 
     return redirect('ocorrencias')
+
+
+@login_required
+def tarifas(request):
+    if not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    
+    tarifas = TarifaTipoQuarto.objects.filter(data_fim_vigencia__gte=now()).order_by('data_inicio_vigencia')
+    return render(request, 'tarifa/tarifas.html', {'tarifas': tarifas})
+
+@login_required
+def cadastrar_tarifa(request):
+    if not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = TarifaTipoQuartoForm(request.POST)
+        if form.is_valid():
+            tipo_quarto = form.cleaned_data['tipo_quarto']
+            data_inicio = form.cleaned_data['data_inicio_vigencia']
+            data_fim = form.cleaned_data['data_fim_vigencia']
+
+            tarifas_existentes = TarifaTipoQuarto.objects.filter(
+                tipo_quarto=tipo_quarto
+            ).filter(
+                Q(data_inicio_vigencia__lte=data_fim) & Q(data_fim_vigencia__gte=data_inicio)
+            )
+
+            if tarifas_existentes.exists():
+                messages.error(request, 'Já existe uma tarifa com datas que se sobrepõem para este tipo de quarto.')
+            elif data_inicio >= data_fim:
+                messages.error(request, 'A data de início da vigência deve ser anterior à data de fim da vigência.')
+            else:
+                form.save()
+                messages.success(request, 'Tarifa cadastrada com sucesso!')
+                return redirect('tarifas') 
+    else:
+        form = TarifaTipoQuartoForm()
+
+    return render(request, 'tarifa/cadastro.html', {'form': form})
+    
+
+@login_required
+def editar_tarifa(request, id):
+    if not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+
+    tarifa = get_object_or_404(TarifaTipoQuarto, id=id)
+
+    if request.method == 'POST':
+        form = TarifaTipoQuartoForm(request.POST, instance=tarifa)
+        if form.is_valid():
+            tipo_quarto = form.cleaned_data['tipo_quarto']
+            data_inicio = form.cleaned_data['data_inicio_vigencia']
+            data_fim = form.cleaned_data['data_fim_vigencia']
+
+            tarifas_existentes = TarifaTipoQuarto.objects.exclude(id=id).filter(
+                tipo_quarto=tipo_quarto
+            ).filter(
+                Q(data_inicio_vigencia__lte=data_fim) & Q(data_fim_vigencia__gte=data_inicio)
+            )
+
+            if tarifas_existentes.exists():
+                messages.error(request, 'Já existe uma tarifa com datas que se sobrepõem para este tipo de quarto.')
+            elif data_inicio >= data_fim:
+                messages.error(request, 'A data de início da vigência deve ser anterior à data de fim da vigência.')
+            else:
+                form.save()
+                messages.success(request, 'Tarifa editada com sucesso!')
+                return redirect('tarifas')
+    else:
+        form = TarifaTipoQuartoForm(instance=tarifa)
+        
+    return render(request, 'tarifa/cadastro.html', {'form': form, 'tarifa': tarifa})

@@ -28,18 +28,23 @@
                 </li>
                 {% if user.is_staff %}
                 <li class="nav-item">
-                    <a class="nav-link" href={%url "funcionarios" %}>Funcionario</a>
+                    <a class="nav-link" href={%url "funcionarios" %}>Funcionarios</a>
                 </li>
                 {%endif%}
-
+                <li class="nav-item">
+                    <a class="nav-link" href={%url "clientes" %}>Clientes</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="drop-quartos" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         Quartos
                     </a>
                     <div class="dropdown-menu" aria-labelledby="drop-quartos">
-                        {% if user.is_staff %}<a class="dropdown-item" href={%url "quartos" %}>Quartos</a>{%endif%}
-                        {% if user.is_staff %}<a class="dropdown-item" href={%url "tipos_quarto"%}>Tipos de Quartos</a>{%endif%}
+                        {% if user.is_staff %}
+                        <a class="dropdown-item" href={%url "quartos" %}>Quartos</a>
+                        <a class="dropdown-item" href={%url "tipos_quarto" %}>Tipos de Quartos</a>
+                        <a class="dropdown-item" href={%url "tarifas" %}>Tarifas</a>
+                        {%endif%}
                         <a class="dropdown-item" href="{%url "ocorrencias"%}">Ocorrências</a>
                     </div>
                 </li>
@@ -74,12 +79,12 @@
             alert.style.display = 'block';
             setTimeout(function () {
                 alert.classList.add('fade-out');
-            }, 3000); 
+            }, 3000);
 
 
             setTimeout(function () {
-                alert.style.display = 'none'; 
-            }, 4000); 
+                alert.style.display = 'none';
+            }, 4000);
         }
 
         // Chama a função para exibir o alerta
