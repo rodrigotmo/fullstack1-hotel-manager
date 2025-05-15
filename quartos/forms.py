@@ -1,5 +1,6 @@
+from datetime import date
 from django import forms
-from .models import TipoQuarto, Quarto, Ocorrencia, StatusQuarto
+from .models import TarifaTipoQuarto, TipoQuarto, Quarto, Ocorrencia, StatusQuarto
 
 class TipoQuartoForm(forms.ModelForm):
     class Meta:
@@ -49,3 +50,28 @@ class OcorrenciaForm(forms.ModelForm):
         if not Quarto.objects.filter(id=quarto.id).exists():
             raise forms.ValidationError("Quarto inválido.")
         return quarto
+    
+    
+class TarifaTipoQuartoForm(forms.ModelForm):
+    class Meta:
+        model = TarifaTipoQuarto
+        fields = [
+            'tipo_quarto',
+            'nome_tarifa_tipo_quarto',
+            'data_inicio_vigencia',
+            'data_fim_vigencia',
+            'valor_diaria',
+        ]
+        widgets = {
+            'data_inicio_vigencia': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'},
+                format='%Y-%m-%d'
+            ),
+            'data_fim_vigencia': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control', 'min': date.today().isoformat()},
+                format='%Y-%m-%d'
+            ),
+            'tipo_quarto': forms.Select(attrs={'class': 'form-control'}),
+            'nome_tarifa_tipo_quarto': forms.TextInput(attrs={'class': 'form-control'}),
+            'valor_diaria': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

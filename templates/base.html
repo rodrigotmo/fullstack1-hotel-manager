@@ -38,8 +38,11 @@
                         Quartos
                     </a>
                     <div class="dropdown-menu" aria-labelledby="drop-quartos">
-                        {% if user.is_staff %}<a class="dropdown-item" href={%url "quartos" %}>Quartos</a>{%endif%}
-                        {% if user.is_staff %}<a class="dropdown-item" href={%url "tipos_quarto"%}>Tipos de Quartos</a>{%endif%}
+                        {% if user.is_staff %}
+                        <a class="dropdown-item" href={%url "quartos" %}>Quartos</a>
+                        <a class="dropdown-item" href={%url "tipos_quarto" %}>Tipos de Quartos</a>
+                        <a class="dropdown-item" href={%url "tarifas" %}>Tarifas</a>
+                        {%endif%}
                         <a class="dropdown-item" href="{%url "ocorrencias"%}">Ocorrências</a>
                     </div>
                 </li>
@@ -74,12 +77,12 @@
             alert.style.display = 'block';
             setTimeout(function () {
                 alert.classList.add('fade-out');
-            }, 3000); 
+            }, 3000);
 
 
             setTimeout(function () {
-                alert.style.display = 'none'; 
-            }, 4000); 
+                alert.style.display = 'none';
+            }, 4000);
         }
 
         // Chama a função para exibir o alerta
