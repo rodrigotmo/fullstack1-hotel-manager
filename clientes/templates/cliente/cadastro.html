@@ -4,26 +4,32 @@
 <div class="container mt-5">
     <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%; margin: 0 auto;">
 
-        <form method="post" action="{% if cliente %}{% url 'editar_cliente' cliente.id %}{% else %}{% url 'cadastrar_cliente' %}{% endif %}">
+        <form method="post"
+            action="{% if cliente %}{% url 'editar_cliente' cliente.id %}{% else %}{% url 'cadastrar_cliente' %}{% endif %}">
             {% csrf_token %}
+
+            {% if request.GET.reserva %}
+            <input type="hidden" name="reserva" value="true">
+            {% endif %}
+
             <h1 class="text-center mb-4">
                 {% if cliente %}Edição de Cliente{% else %}Cadastro de Cliente{% endif %}
             </h1>
-        
+
             {{ form.non_field_errors }}
-        
+
             <div class="mb-3">
                 {{ form.nome.label_tag }}
                 {{ form.nome }}
                 {{ form.nome.errors }}
             </div>
-        
+
             <div class="mb-3">
                 {{ form.documento.label_tag }}
                 {{ form.documento }}
                 {{ form.documento.errors }}
             </div>
-        
+
             <div class="mb-3">
                 {{ form.telefone.label_tag }}
                 {{ form.telefone }}
@@ -34,13 +40,13 @@
                 {{ form.endereco }}
                 {{ form.endereco.errors }}
             </div>
-        
+
             <div class="d-grid gap-2">
-                <input type="submit" class="btn btn-primary" value="{% if cliente %}Salvar Alterações{% else %}Cadastrar{% endif %}">
+                <input type="submit" class="btn btn-primary"
+                    value="{% if cliente %}Salvar Alterações{% else %}Cadastrar{% endif %}">
             </div>
-        </form>        
+        </form>
 
     </div>
 </div>
 {% endblock content %}
-
