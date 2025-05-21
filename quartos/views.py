@@ -73,13 +73,12 @@ def bloquear_liberar_quarto(request, id):
         messages.error(request, 'Status do quarto não pode ser mudado pois possui reservas ativas.')
         return redirect('quartos')
     else:
-        if quarto.status_quarto == StatusQuarto.INDISPONIVEL():
-            quarto.status_quarto = StatusQuarto.LIBERADO()
+        if quarto.reserva_liberada == True:
+            quarto.reserva_liberada = False
         else:
-            quarto.status_quarto = StatusQuarto.INDISPONIVEL()
+            quarto.reserva_liberada = True
             
         quarto.save()
-        messages.success(request, quarto.status_quarto)
         messages.success(request, 'Status do quarto alterado com sucesso.')
         return redirect('quartos')
         

@@ -22,6 +22,7 @@
                             <th>Capacidade</th>
                             <th>Tipo</th>
                             <th>Status</th>
+                            <th>Reserva Liberada</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -33,11 +34,12 @@
                             <td>{{ quarto.capacidade }}</td>
                             <td>{{ quarto.tipo_quarto }}</td>
                             <td>{{ quarto.status_quarto }}</td>
+                            <td>{{ quarto.reserva_liberada }}</td>
                             <td>
                                 <a href="{% url 'editar_quarto' quarto.id %}" class="btn btn-primary btn-sm">Editar</a>
-                                {% if quarto.status_quarto.nome_status_quarto == 'Liberado' %}
+                                {% if quarto.reserva_liberada == True %}
                                 <a href="{% url 'bloquear_quarto' quarto.id %}" class="btn btn-warning btn-sm">Bloquear</a>
-                                {% elif quarto.status_quarto.nome_status_quarto == 'Indisponível' %}
+                                {% elif quarto.reserva_liberada == False %}
                                 <a href="{% url 'liberar_quarto' quarto.id %}" class="btn btn-warning btn-sm">Liberar</a>
                                 {% endif %}
                                 <a href="{% url 'remover_quarto' quarto.id %}" class="btn btn-danger btn-sm">Remover</a>
