@@ -13,7 +13,7 @@ class StatusQuarto(models.Model):
 
     @staticmethod
     def create_default_values():
-        for status in ['Liberado', 'Em uso', 'Indisponível', 'Removido']:
+        for status in ['Liberado', 'Em uso', 'Removido']:
             StatusQuarto.objects.get_or_create(nome_status_quarto=status)
 
     @classmethod
@@ -23,10 +23,6 @@ class StatusQuarto(models.Model):
     @classmethod
     def EM_USO(cls):
         return cls.objects.get(nome_status_quarto='Em uso')
-
-    @classmethod
-    def INDISPONIVEL(cls):
-        return cls.objects.get(nome_status_quarto='Indisponível')
 
     @classmethod
     def REMOVIDO(cls):
@@ -50,6 +46,7 @@ class Quarto(models.Model):
     numero = models.CharField(max_length=10)
     capacidade = models.IntegerField()
     status_quarto = models.ForeignKey(StatusQuarto, on_delete=models.CASCADE)
+    reserva_liberada = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Quarto {self.numero}"

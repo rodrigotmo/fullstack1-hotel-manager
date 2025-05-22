@@ -37,7 +37,6 @@ def logout(request):
 @login_required      
 def home(request):
     status_quarto_liberado = StatusQuarto.LIBERADO()
-    status_quarto_indisponivel = StatusQuarto.INDISPONIVEL()
     status_quarto_em_uso = StatusQuarto.EM_USO()
     status_quarto_removido = StatusQuarto.REMOVIDO()
     status_reserva_reservada = StatusReserva.RESERVADA()
@@ -55,7 +54,7 @@ def home(request):
         
         'qtd_quartos': Quarto.objects.all().count(),
         'qtd_quartos_disponivel': Quarto.objects.filter(status_quarto=status_quarto_liberado).count(),
-        'qtd_quartos_indisponivel': Quarto.objects.filter(status_quarto=status_quarto_indisponivel).count(),
+        'qtd_quartos_indisponivel': Quarto.objects.filter(reserva_liberada=False).count(),
         'qtd_quartos_em_uso': Quarto.objects.filter(status_quarto=status_quarto_em_uso).count(),
         'qtd_quartos_removido': Quarto.objects.filter(status_quarto=status_quarto_removido).count(),
         
