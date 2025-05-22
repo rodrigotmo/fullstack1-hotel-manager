@@ -43,8 +43,11 @@ class Reserva(models.Model):
     data_reserva_criada = models.DateField()
     data_reserva_previsao_inicio = models.DateField()
     data_reserva_previsao_fim = models.DateField()
-    data_check_in = models.DateField()
-    data_check_out = models.DateField()
+    data_check_in = models.DateField(blank=True, null=True)
+    data_check_out = models.DateField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['-data_reserva_criada']
 
     def __str__(self):
         return f"Reserva {self.id} - {self.cliente.nome}"
