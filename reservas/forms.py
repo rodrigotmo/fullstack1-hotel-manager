@@ -1,28 +1,38 @@
 from datetime import date, timezone
 from django import forms
-from .models import Reserva, Cliente, Quarto
+
+from quartos.models import TarifaTipoQuarto
+from .models import Reserva, Cliente, Quarto, StatusReserva
 
 class ReservaForm(forms.ModelForm):
     cliente = forms.ModelChoiceField(queryset=Cliente.objects.filter(ativo=True), required=True)
-    data_reserva_previsao_inicio = forms.DateField(widget=forms.SelectDateWidget, required=True)
-    data_reserva_previsao_fim = forms.DateField(widget=forms.SelectDateWidget, required=True)
     quarto = forms.ModelChoiceField(queryset=Quarto.objects.none(), required=True)
 
     class Meta:
         model = Reserva
         fields = ['cliente', 'data_reserva_previsao_inicio', 'data_reserva_previsao_fim', 'quarto']
+        widgets = {
+            'data_reserva_previsao_inicio': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control', 'min': date.today().isoformat()},
+                format='%Y-%m-%d'
+            ),
+            'data_reserva_previsao_fim': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control', 'min': date.today().isoformat()},
+                format='%Y-%m-%d'
+            )
+        }
 
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.user = user  # Usuário logado
+        self.user = user 
         self.fields['quarto'].queryset = Quarto.objects.all()
 
         if 'data_reserva_previsao_inicio' in self.data and 'data_reserva_previsao_fim' in self.data:
             self.atualizar_quartos_disponiveis()
 
     def atualizar_quartos_disponiveis(self):
-        data_inicio = self.cleaned_data.get('data_reserva_previsao_inicio')
-        data_fim = self.cleaned_data.get('data_reserva_previsao_fim')
+        data_inicio = self.data.get('data_reserva_previsao_inicio')
+        data_fim = self.data.get('data_reserva_previsao_fim')
 
         if data_inicio and data_fim:
             quartos_ocupados = Reserva.objects.filter(
@@ -45,7 +55,19 @@ class ReservaForm(forms.ModelForm):
     def save(self, commit=True):
         reserva = super().save(commit=False)
         reserva.funcionario = self.user 
-        reserva.data_reserva_criada = timezone.now().date()
+        reserva.data_reserva_criada = date.today()
+        reserva.status_reserva = StatusReserva.RESERVADA()
+        tarifa = TarifaTipoQuarto.objects.filter(
+            tipo_quarto=reserva.quarto.tipo_quarto,
+            data_inicio_vigencia__lte=reserva.data_reserva_previsao_inicio,
+            data_fim_vigencia__gte=reserva.data_reserva_previsao_fim
+        ).first()
+
+        if not tarifa:
+            raise forms.ValidationError("Não há tarifa definida para esse tipo de quarto na data selecionada.")
+
+        reserva.tarifa_tipo_quarto = tarifa
+        
         if commit:
             reserva.save()
         return reserva

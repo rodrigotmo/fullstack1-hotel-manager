@@ -35,7 +35,6 @@
                         <tr>
                             <td>{{ reserva.id }}</td>
                             <td>{{ reserva.cliente }}</td>
-                            <td>{{ reserva.funcionario }}</td>
                             <td>{{ reserva.quarto }}</td>
                             <td>{{ reserva.status_reserva }}</td>
                             <td>{{ reserva.tarifa_tipo_quarto }}</td>
@@ -45,13 +44,12 @@
                             <td>{{ reserva.data_reserva_checkin }}</td>
                             <td>{{ reserva.data_reserva_checkout }}</td>
                             <td>
-                                <a href="{% url 'cancelar_reserva' reserva.id %}" class="btn btn-primary btn-sm">Cancelar</a>
-                            <td>
-                        
+                                <a class="btn btn-primary btn-sm">Cancelar</a>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="11">Nenhuma reserva encontrada.</td>
+                            <td colspan="10">Nenhuma reserva encontrada.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

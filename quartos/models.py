@@ -49,7 +49,7 @@ class Quarto(models.Model):
     reserva_liberada = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"Quarto {self.numero}"
+        return f"Quarto {self.numero} - {self.tipo_quarto.nome_tipo_quarto}"
 
 
 class Ocorrencia(models.Model):
@@ -73,6 +73,6 @@ class TarifaTipoQuarto(models.Model):
     valor_diaria = models.FloatField(default=0)
 
     def __str__(self):
-        return self.nome_tarifa_tipo_quarto
+        return f"{self.nome_tarifa_tipo_quarto} - {self.valor_diaria}/dia"
     
     
