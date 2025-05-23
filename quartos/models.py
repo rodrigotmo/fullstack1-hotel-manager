@@ -42,10 +42,10 @@ class TipoQuarto(models.Model):
                 TipoQuarto.objects.create(nome_tipo_quarto=tipo)
 
 class Quarto(models.Model):
-    tipo_quarto = models.ForeignKey(TipoQuarto, on_delete=models.CASCADE)
+    tipo_quarto = models.ForeignKey(TipoQuarto, on_delete=models.RESTRICT)
     numero = models.CharField(max_length=10)
     capacidade = models.IntegerField()
-    status_quarto = models.ForeignKey(StatusQuarto, on_delete=models.CASCADE)
+    status_quarto = models.ForeignKey(StatusQuarto, on_delete=models.RESTRICT)
     reserva_liberada = models.BooleanField(default=True)
 
     def __str__(self):
@@ -53,7 +53,7 @@ class Quarto(models.Model):
 
 
 class Ocorrencia(models.Model):
-    quarto = models.ForeignKey(Quarto, on_delete=models.CASCADE)
+    quarto = models.ForeignKey(Quarto, on_delete=models.RESTRICT)
     data_abertura_ocorrencia = models.DateTimeField()
     data_fechamento_ocorrencia = models.DateTimeField(null=True, blank=True)
     descricao = models.TextField()
@@ -66,7 +66,7 @@ class Ocorrencia(models.Model):
 
 
 class TarifaTipoQuarto(models.Model):
-    tipo_quarto = models.ForeignKey(TipoQuarto, on_delete=models.CASCADE)
+    tipo_quarto = models.ForeignKey(TipoQuarto, on_delete=models.RESTRICT)
     nome_tarifa_tipo_quarto = models.CharField(max_length=255)
     data_inicio_vigencia = models.DateField()
     data_fim_vigencia = models.DateField()
