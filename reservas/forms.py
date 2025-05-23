@@ -1,7 +1,7 @@
 from datetime import date, timezone
 from django import forms
-
-from quartos.models import TarifaTipoQuarto
+from django.db.models import Q
+from quartos.models import StatusQuarto, TarifaTipoQuarto
 from .models import Reserva, Cliente, Quarto, StatusReserva
 
 class ReservaForm(forms.ModelForm):
@@ -25,7 +25,10 @@ class ReservaForm(forms.ModelForm):
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user 
-        self.fields['quarto'].queryset = Quarto.objects.all()
+        self.fields['quarto'].queryset = Quarto.objects.exclude(
+            Q(status_quarto_id=StatusQuarto.REMOVIDO()) |
+            Q(reserva_liberada=False)
+        )
 
         if 'data_reserva_previsao_inicio' in self.data and 'data_reserva_previsao_fim' in self.data:
             self.atualizar_quartos_disponiveis()
@@ -40,7 +43,11 @@ class ReservaForm(forms.ModelForm):
                 data_reserva_previsao_inicio__lte=data_fim
             ).values_list('quarto_id', flat=True)
 
-            self.fields['quarto'].queryset = Quarto.objects.exclude(id__in=quartos_ocupados)
+            self.fields['quarto'].queryset = Quarto.objects.exclude(
+                Q(id__in=quartos_ocupados) |
+                Q(status_quarto_id=StatusQuarto.REMOVIDO()) |
+                Q(reserva_liberada=False)
+            )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -65,7 +72,7 @@ class ReservaForm(forms.ModelForm):
 
         if not tarifa:
             raise forms.ValidationError("Não há tarifa definida para esse tipo de quarto na data selecionada.")
-
+    
         reserva.tarifa_tipo_quarto = tarifa
         
         if commit:
