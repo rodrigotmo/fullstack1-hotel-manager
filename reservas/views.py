@@ -1,9 +1,10 @@
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from clientes.models import Cliente
 from reservas.forms import ReservaForm
-from reservas.models import Reserva
+from reservas.models import Reserva, StatusReserva
+from django.utils.timezone import now
 
 @login_required
 def reservas(request):
@@ -31,3 +32,16 @@ def cadastrar_reserva(request):
         form = ReservaForm(initial={'cliente': cliente_inicial}, user=request.user)
 
     return render(request, 'reserva/cadastro.html', {'form': form})
+
+@login_required
+def cancelar_reserva(request, reserva_id):
+    reserva = get_object_or_404(Reserva, id=reserva_id)
+    if reserva.status_reserva == StatusReserva.CANCELADA() or reserva.status_reserva == StatusReserva.FINALIZADA() or reserva.status_reserva == StatusReserva.EM_ANDAMENTO():
+        messages.info(request, 'Esta reserva já está cancelada, finalizada ou em andamento.')
+    else:
+        reserva.status_reserva = StatusReserva.CANCELADA()
+        reserva.data_cancelamento = now()
+        reserva.save()
+        messages.success(request, f'Reserva #{reserva.id} cancelada com sucesso.')
+
+    return redirect('reservas')

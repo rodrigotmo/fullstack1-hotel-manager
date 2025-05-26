@@ -45,6 +45,7 @@ class Reserva(models.Model):
     data_reserva_previsao_fim = models.DateField()
     data_check_in = models.DateField(blank=True, null=True)
     data_check_out = models.DateField(blank=True, null=True)
+    data_cancelamento = models.DateField(blank=True, null=True)
 
     class Meta:
         ordering = ['-data_reserva_criada']
