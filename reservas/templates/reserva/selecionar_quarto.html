@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load multiply %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 800px; margin:auto;">
+    <div class="card shadow-lg p-4">
+        <h2 class="mb-4">Selecione o Quarto - Etapa 2</h2>
+
+        <p><strong>Cliente:</strong> {{ cliente.nome }}</p>
+        <p><strong>Data Previsão Check-in:</strong> {{ data_inicio }}</p>
+        <p><strong>Data Previsão Check-out:</strong> {{ data_fim }}</p>
+        <p><strong>Quantidade de diárias:</strong> {{ qtd_dias }}</p>
+
+        <form method="post" id="form-selecionar-quarto">
+            {% csrf_token %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Quarto</th>
+                        <th>Tipo</th>
+                        <th>Capacidade</th>
+                        <th>Status</th>
+                        <th>Diária (R$)</th>
+                        <th>Total (R$)</th>
+                        <th>Selecionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in quartos_com_tarifa %}
+                    <tr>
+                        <td>{{ item.quarto.numero }}</td>
+                        <td>{{ item.quarto.tipo_quarto.nome_tipo_quarto }}</td>
+                        <td>{{ item.quarto.capacidade }}</td>
+                        <td>{{ item.quarto.status_quarto.nome_status_quarto }}</td>
+                        <td>{{ item.tarifa.valor_diaria|floatformat:2 }}</td>
+                        <td>{{ item.tarifa.valor_diaria|mul:qtd_dias|floatformat:2 }}</td>
+                        <td>
+                            <button type="submit" name="quarto_id" value="{{ item.quarto.id }}"
+                                class="btn btn-success btn-sm">
+                                Selecionar
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">Nenhum quarto disponível para as datas selecionadas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+        <a href="{% url 'reserva_inicial' %}" class="btn btn-secondary mt-3">Voltar</a>
+    </div>
+
+</div>
+{% endblock %}
