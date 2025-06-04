@@ -32,7 +32,7 @@ def cadastrar_cliente(request):
             messages.success(request, 'Cliente cadastrado com sucesso.')
             
             if reserva_flag:
-                return redirect(reverse('cadastrar_reserva') + '?' + urlencode({'cliente_id': cliente.id}))
+                return redirect(reverse('reserva_inicial') + '?' + urlencode({'cliente_id': cliente.id}))
             else:
                 return redirect('clientes')
             

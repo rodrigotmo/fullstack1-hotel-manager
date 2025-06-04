@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px; margin:auto;">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Cadastro de Reserva - Etapa 1</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div class="mb-3">
+                <label for="{{ form.cliente.id_for_label }}" class="form-label">Cliente</label>
+                {{ form.cliente }}
+                {{ form.cliente.errors }}
+                <div class="form-text">
+                    <a href="{% url 'cadastrar_cliente' %}?reserva=true">Cadastrar novo cliente</a>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.data_reserva_previsao_inicio.id_for_label }}" class="form-label">Data Previsão Check-in</label>
+                {{ form.data_reserva_previsao_inicio }}
+                {{ form.data_reserva_previsao_inicio.errors }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.data_reserva_previsao_fim.id_for_label }}" class="form-label">Data Previsão Check-out</label>
+                {{ form.data_reserva_previsao_fim }}
+                {{ form.data_reserva_previsao_fim.errors }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Selecionar Quarto</button>
+
+            <a href="{% url 'limpar_sessao_reserva' %}" class="btn btn-danger w-100 mt-2">Limpar Dados da Reserva</a>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

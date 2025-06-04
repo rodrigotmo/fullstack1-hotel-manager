@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from funcionarios.models import Funcionario
 from quartos.models import Quarto, TarifaTipoQuarto
@@ -40,7 +41,7 @@ class Reserva(models.Model):
     quarto = models.ForeignKey(Quarto, on_delete=models.RESTRICT)
     status_reserva = models.ForeignKey(StatusReserva, on_delete=models.RESTRICT)
     tarifa_tipo_quarto = models.ForeignKey(TarifaTipoQuarto, on_delete=models.RESTRICT)
-    data_reserva_criada = models.DateField()
+    data_reserva_criada = models.DateField(default=timezone.now)
     data_reserva_previsao_inicio = models.DateField()
     data_reserva_previsao_fim = models.DateField()
     data_check_in = models.DateField(blank=True, null=True)

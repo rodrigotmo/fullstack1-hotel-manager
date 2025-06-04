@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load multiply %} 
+{% block content %}
+<div class="container mt-5" style="max-width: 600px; margin:auto;">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Resumo da Reserva - Etapa 3</h2>
+        <ul class="list-group mb-4">
+            <li class="list-group-item"><strong>Cliente:</strong> {{ cliente.nome }}</li>
+            <li class="list-group-item"><strong>Data Previsão Check-in:</strong> {{ data_inicio }}</li>
+            <li class="list-group-item"><strong>Data Previsão Check-out:</strong> {{ data_fim }}</li>
+            <li class="list-group-item"><strong>Quantidade de diárias:</strong> {{ qtd_dias }}</li>
+            <li class="list-group-item"><strong>Quarto:</strong> {{ quarto.numero }} - {{ quarto.tipo_quarto.nome_tipo_quarto }}</li>
+            <li class="list-group-item"><strong>Tarifa:</strong> R$ {{ tarifa.valor_diaria|floatformat:2  }}</li>
+            <li class="list-group-item"><strong>Total:</strong> R$ {{ tarifa.valor_diaria|mul:qtd_dias|floatformat:2  }}</li>
+        </ul>
+
+        <form method="post" class="d-flex gap-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary flex-grow-1">Confirmar Reserva</button>
+            <a href="{% url 'selecionar_quarto' %}" class="btn btn-secondary flex-grow-1">Voltar para Seleção</a>
+            <a href="{% url 'reserva_inicial' %}" class="btn btn-danger flex-grow-1">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
