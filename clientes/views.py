@@ -9,8 +9,22 @@ from django.urls import reverse
 
 @login_required
 def clientes(request):
-    clientes = Cliente.objects.all()
-    return render(request, 'cliente/clientes.html', {'clientes': clientes})
+    query = request.GET.get('busca', '')
+    if query:
+        clientes = Cliente.objects.filter(nome__icontains=query)
+    else:
+        clientes = Cliente.objects.all()
+    return render(request, 'cliente/clientes.html', {'clientes': clientes, 'query': query})
+
+@login_required
+def ordenar_clientes(request, campo):
+    query = request.GET.get('busca', '')
+    if query:
+        clientes = Cliente.objects.filter(nome__icontains=query)
+    else:
+        clientes = Cliente.objects.all()
+    clientes = clientes.order_by(campo)
+    return render(request, 'cliente/clientes.html', {'clientes': clientes, 'query': query})
 
 @login_required
 def cadastrar_cliente(request):

@@ -8,7 +8,13 @@
     
     <div class="mb-4 text-center">
         <a href="{% url 'cadastrar_cliente' %}" class="btn btn-success mb-4">Novo</a>
-        <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Buscar por nome, documento ou id...">
+        <div>
+            <form method="get">
+                <input type="text" value="{{ query|default:'' }}" name="busca" class="form-control w-50 mx-auto"
+                    placeholder="Buscar por nome...">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </form>
+        </div>    
     </div>
 
     <div class="row justify-content-center">
@@ -17,12 +23,12 @@
                 <table class="table table-striped table-bordered text-center custom-table">
                     <thead class="bg-dark text-white">
                         <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Documento</th>
-                            <th>Telefone</th>
-                            <th>Endereço</th>
-                            <th>Ativo</th>
+                            <th><a href="{% url 'ordenar_clientes' 'id' %}?busca={{ query }}">ID</a></th>
+                            <th><a href="{% url 'ordenar_clientes' 'nome' %}?busca={{ query }}">Nome</a></th>
+                            <th><a href="{% url 'ordenar_clientes' 'documento' %}?busca={{ query }}">Documento</a></th>
+                            <th><a href="{% url 'ordenar_clientes' 'telefone' %}?busca={{ query }}">Telefone</a></th>
+                            <th><a href="{% url 'ordenar_clientes' 'endereco' %}?busca={{ query }}">Endereço</a></th>
+                            <th><a href="{% url 'ordenar_clientes' 'ativo' %}?busca={{ query }}">Ativo</a></th>
                             <th>Ações</th>
                         </tr>
                     </thead>
