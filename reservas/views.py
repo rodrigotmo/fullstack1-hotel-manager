@@ -2,12 +2,12 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.timezone import now
 from clientes.models import Cliente
 from quartos.models import Quarto, StatusQuarto, TarifaTipoQuarto
 from reservas.models import Reserva, StatusReserva
 from reservas.forms import ReservaInicialForm
 from django.db.models import Case, When, Value, IntegerField
+from django.utils import timezone
 
 @login_required
 def reservas(request):
@@ -189,4 +189,46 @@ def cancelar_reserva(request, reserva_id):
         reserva.save()
         messages.success(request, f'Reserva #{reserva.id} cancelada com sucesso.')
 
+    return redirect('reservas')
+
+@login_required
+def checkin(request, reserva_id):
+    reserva = get_object_or_404(Reserva, id=reserva_id)
+    if reserva.status_reserva != StatusReserva.RESERVADA():
+        messages.error(request, 'Esta reserva não está mais disponível para check-in.')
+        return redirect('reservas')
+    
+    quarto = reserva.quarto
+    if quarto.status_quarto != StatusQuarto.LIBERADO():
+        messages.error(request, 'O quarto selecionado não está disponível para check-in.')
+        return redirect('reservas')
+
+    reserva.status_reserva = StatusReserva.EM_ANDAMENTO()
+    reserva.data_check_in = timezone.now()
+    reserva.save()
+
+    quarto.status_quarto = StatusQuarto.EM_USO()
+    quarto.save()
+
+    messages.success(request, f'Check-in realizado com sucesso para a reserva #{reserva.id}.')
+    
+    return redirect('reservas')
+
+@login_required
+def checkout(request, reserva_id):
+    reserva = get_object_or_404(Reserva, id=reserva_id)
+    if reserva.status_reserva != StatusReserva.EM_ANDAMENTO():
+        messages.error(request, 'Esta reserva não está em andamento para checkout.')
+        return redirect('reservas')
+
+    reserva.status_reserva = StatusReserva.FINALIZADA()
+    reserva.data_check_out = timezone.now()
+    reserva.save()
+
+    quarto = reserva.quarto
+    quarto.status_quarto = StatusQuarto.LIBERADO()
+    quarto.save()
+
+    messages.success(request, f'Checkout realizado com sucesso para a reserva #{reserva.id}.')
+    
     return redirect('reservas')
