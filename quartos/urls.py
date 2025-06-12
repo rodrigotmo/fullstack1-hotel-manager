@@ -3,6 +3,7 @@ from quartos import views
 
 urlpatterns = [
     path('', views.quartos, name='quartos'), 
+    path('ordenar/<campo>/', views.ordenar_quartos, name='ordenar_quartos'),
     path('cadastro', views.cadastrar_quarto, name='cadastrar_quarto'), 
     path('editar/<int:id>', views.editar_quarto, name='editar_quarto'), 
     path('remover/<int:id>', views.remover_quarto, name='remover_quarto'), 

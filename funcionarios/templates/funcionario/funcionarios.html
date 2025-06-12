@@ -5,10 +5,16 @@
 
 <div class="container mt-5">
     <h1 class="text-center my-4">Lista de Funcionários</h1>
-    
+
     <div class="mb-4 text-center">
         <a href="{% url 'cadastrar_funcionario' %}" class="btn btn-success mb-4">Novo</a>
-        <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Buscar por nome, usuário ou id...">
+        <div>
+            <form method="get">
+                <input type="text" value="{{ query|default:'' }}" name="busca" class="form-control w-50 mx-auto"
+                    placeholder="Buscar por nome...">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </form>
+        </div>
     </div>
 
     <div class="row justify-content-center">
@@ -17,11 +23,11 @@
                 <table class="table table-striped table-bordered text-center custom-table">
                     <thead class="bg-dark text-white">
                         <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Usuário</th>
-                            <th>Administrador</th>
-                            <th>Ativo</th>
+                            <th><a href="{% url 'ordenar_funcionarios' 'id' %}?busca={{ query }}">ID</a></th>
+                            <th><a href="{% url 'ordenar_funcionarios' 'nome' %}?busca={{ query }}">Nome</a></th>
+                            <th><a href="{% url 'ordenar_funcionarios' 'username' %}?busca={{ query }}">Usuário</a></th>
+                            <th><a href="{% url 'ordenar_funcionarios' 'is_staff' %}?busca={{ query }}">Administrador</a></th>
+                            <th><a href="{% url 'ordenar_funcionarios' 'ativo' %}?busca={{ query }}">Ativo</a></th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -34,11 +40,14 @@
                             <td>{{ funcionario.is_staff }}</td>
                             <td>{{ funcionario.ativo }}</td>
                             <td>
-                                <a href="{% url 'editar_funcionario' funcionario.id %}" class="btn btn-primary btn-sm">Editar</a>
+                                <a href="{% url 'editar_funcionario' funcionario.id %}"
+                                    class="btn btn-primary btn-sm">Editar</a>
                                 {% if funcionario.ativo %}
-                                    <a href="{% url 'desativar_funcionario' funcionario.id %}" class="btn btn-warning btn-sm">Desativar</a>
+                                <a href="{% url 'desativar_funcionario' funcionario.id %}"
+                                    class="btn btn-warning btn-sm">Desativar</a>
                                 {% else %}
-                                    <a href="{% url 'ativar_funcionario' funcionario.id %}" class="btn btn-success btn-sm">Reativar</a>
+                                <a href="{% url 'ativar_funcionario' funcionario.id %}"
+                                    class="btn btn-success btn-sm">Reativar</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -53,31 +62,5 @@
         </div>
     </div>
 </div>
-
-
-<script>
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        let filter = this.value.toLowerCase();
-        let rows = document.querySelectorAll('.custom-table tbody tr');
-        
-        rows.forEach(function(row) {
-            let cells = row.getElementsByTagName('td');
-            let match = false;
-            
-            for (let i = 0; i < cells.length; i++) {
-                if (cells[i].textContent.toLowerCase().includes(filter)) {
-                    match = true;
-                    break;
-                }
-            }
-            
-            if (match) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
-</script>
 
 {% endblock content %}

@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from funcionarios.models import Funcionario
 from quartos.models import Quarto, TarifaTipoQuarto
@@ -35,16 +36,20 @@ class StatusReserva(models.Model):
 
 
 class Reserva(models.Model):
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)
-    quarto = models.ForeignKey(Quarto, on_delete=models.CASCADE)
-    status_reserva = models.ForeignKey(StatusReserva, on_delete=models.CASCADE)
-    tarifa_tipo_quarto = models.ForeignKey(TarifaTipoQuarto, on_delete=models.CASCADE)
-    data_reserva_criada = models.DateField()
+    cliente = models.ForeignKey(Cliente, on_delete=models.RESTRICT)
+    funcionario = models.ForeignKey(Funcionario, on_delete=models.RESTRICT)
+    quarto = models.ForeignKey(Quarto, on_delete=models.RESTRICT)
+    status_reserva = models.ForeignKey(StatusReserva, on_delete=models.RESTRICT)
+    tarifa_tipo_quarto = models.ForeignKey(TarifaTipoQuarto, on_delete=models.RESTRICT)
+    data_reserva_criada = models.DateField(default=timezone.now)
     data_reserva_previsao_inicio = models.DateField()
     data_reserva_previsao_fim = models.DateField()
-    data_check_in = models.DateField()
-    data_check_out = models.DateField()
+    data_check_in = models.DateField(blank=True, null=True)
+    data_check_out = models.DateField(blank=True, null=True)
+    data_cancelamento = models.DateField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['-data_reserva_criada']
 
     def __str__(self):
         return f"Reserva {self.id} - {self.cliente.nome}"

@@ -11,9 +11,27 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def quartos(request):
+    query = request.GET.get('busca', '')
     if request.user.is_staff:
-        quartos = Quarto.objects.exclude(status_quarto=StatusQuarto.REMOVIDO()).all()
-        return render(request, 'quarto/quartos.html', {'quartos': quartos})
+        if query:
+            quartos = Quarto.objects.exclude(status_quarto=StatusQuarto.REMOVIDO()).filter(numero__icontains=query)
+        else:
+            quartos = Quarto.objects.exclude(status_quarto=StatusQuarto.REMOVIDO()).all()
+        return render(request, 'quarto/quartos.html', {'quartos': quartos, 'query': query})
+    else:
+        messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
+        return redirect('home')
+    
+@login_required
+def ordenar_quartos(request, campo):
+    query = request.GET.get('busca', '')
+    if request.user.is_staff:
+        if query:
+            quartos = Quarto.objects.exclude(status_quarto=StatusQuarto.REMOVIDO()).filter(numero__icontains=query)
+        else:
+            quartos = Quarto.objects.exclude(status_quarto=StatusQuarto.REMOVIDO()).all()
+        quartos = quartos.order_by(campo)    
+        return render(request, 'quarto/quartos.html', {'quartos': quartos, 'query': query})
     else:
         messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
         return redirect('home')
@@ -68,20 +86,14 @@ def bloquear_liberar_quarto(request, id):
         return redirect('home')
     
     quarto = get_object_or_404(Quarto, id=id) 
-    reservas = Reserva.objects.filter(Q(quarto_id=quarto) & (Q(status_reserva=StatusReserva.RESERVADA()) | Q(status_reserva=StatusReserva.EM_ANDAMENTO()))).first()
-    if reservas:
-        messages.error(request, 'Status do quarto não pode ser mudado pois possui reservas ativas.')
-        return redirect('quartos')
+    if quarto.reserva_liberada == True:
+        quarto.reserva_liberada = False
     else:
-        if quarto.status_quarto == StatusQuarto.INDISPONIVEL():
-            quarto.status_quarto = StatusQuarto.LIBERADO()
-        else:
-            quarto.status_quarto = StatusQuarto.INDISPONIVEL()
+        quarto.reserva_liberada = True
             
-        quarto.save()
-        messages.success(request, quarto.status_quarto)
-        messages.success(request, 'Status do quarto alterado com sucesso.')
-        return redirect('quartos')
+    quarto.save()
+    messages.success(request, 'Status do quarto alterado com sucesso.')
+    return redirect('quartos')
         
 @login_required        
 def remover_quarto(request,id):

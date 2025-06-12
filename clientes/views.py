@@ -1,17 +1,34 @@
+from urllib.parse import urlencode
 from django.shortcuts import render
 from clientes.models import Cliente
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import ClienteForm
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 @login_required
 def clientes(request):
-    clientes = Cliente.objects.all()
-    return render(request, 'cliente/clientes.html', {'clientes': clientes})
+    query = request.GET.get('busca', '')
+    if query:
+        clientes = Cliente.objects.filter(nome__icontains=query)
+    else:
+        clientes = Cliente.objects.all()
+    return render(request, 'cliente/clientes.html', {'clientes': clientes, 'query': query})
+
+@login_required
+def ordenar_clientes(request, campo):
+    query = request.GET.get('busca', '')
+    if query:
+        clientes = Cliente.objects.filter(nome__icontains=query)
+    else:
+        clientes = Cliente.objects.all()
+    clientes = clientes.order_by(campo)
+    return render(request, 'cliente/clientes.html', {'clientes': clientes, 'query': query})
 
 @login_required
 def cadastrar_cliente(request):
+    reserva_flag = (request.GET.get('reserva') == 'true' or request.POST.get('reserva') == 'true')
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
@@ -27,7 +44,12 @@ def cadastrar_cliente(request):
             )
             cliente.save()
             messages.success(request, 'Cliente cadastrado com sucesso.')
-            return redirect('clientes')
+            
+            if reserva_flag:
+                return redirect(reverse('reserva_inicial') + '?' + urlencode({'cliente_id': cliente.id}))
+            else:
+                return redirect('clientes')
+            
     else:
         form = ClienteForm()
 

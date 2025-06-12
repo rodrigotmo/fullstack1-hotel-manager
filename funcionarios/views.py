@@ -8,8 +8,26 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def funcionarios(request):
     if request.user.is_staff:
-        funcionarios = Funcionario.objects.all()
-        return render(request, 'funcionario/funcionarios.html', {'funcionarios': funcionarios})
+        query = request.GET.get('busca', '')
+        if query:
+            funcionarios = Funcionario.objects.filter(nome__icontains=query)
+        else:
+            funcionarios = Funcionario.objects.all()
+        return render(request, 'funcionario/funcionarios.html', {'funcionarios': funcionarios, 'query': query})
+    else:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    
+@login_required
+def ordenar_funcionarios(request, campo):
+    if request.user.is_staff:
+        query = request.GET.get('busca', '')
+        if query:
+            funcionarios = Funcionario.objects.filter(nome__icontains=query)
+        else:
+            funcionarios = Funcionario.objects.all()
+        funcionarios = funcionarios.order_by(campo)
+        return render(request, 'funcionario/funcionarios.html', {'funcionarios': funcionarios, 'query': query})
     else:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
