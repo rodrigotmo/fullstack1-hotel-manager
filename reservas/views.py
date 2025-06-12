@@ -25,6 +25,16 @@ def reservas(request):
     return render(request, 'reserva/reservas.html', {'reservas': reservas})
 
 @login_required
+def reservas_canceladas(request):
+    reservas = Reserva.objects.filter(status_reserva__in=[StatusReserva.CANCELADA()]).order_by('-data_reserva_criada')
+    return render(request, 'reserva/reservas.html', {'reservas': reservas})
+
+@login_required
+def reservas_finalizadas(request):
+    reservas = Reserva.objects.filter(status_reserva__in=[StatusReserva.FINALIZADA()]).order_by('-data_reserva_criada')
+    return render(request, 'reserva/reservas.html', {'reservas': reservas})
+
+@login_required
 def reserva_inicial(request):
             
     if request.method == 'POST':
