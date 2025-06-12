@@ -195,7 +195,7 @@ def cancelar_reserva(request, reserva_id):
         messages.info(request, 'Esta reserva já está cancelada, finalizada ou em andamento.')
     else:
         reserva.status_reserva = StatusReserva.CANCELADA()
-        reserva.data_cancelamento = now()
+        reserva.data_cancelamento = timezone.now()
         reserva.save()
         messages.success(request, f'Reserva #{reserva.id} cancelada com sucesso.')
 
