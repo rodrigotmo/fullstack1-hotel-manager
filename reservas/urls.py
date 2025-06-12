@@ -3,6 +3,8 @@ from reservas import views
 
 urlpatterns = [
     path('', views.reservas, name='reservas'),
+    path('canceladas/', views.reservas_canceladas, name='reservas_canceladas'),
+    path('finalizadas/', views.reservas_finalizadas, name='reservas_finalizadas'),
 
     path('reservas/checkin/<int:reserva_id>/', views.checkin, name='checkin'),
     path('reservas/checkout/<int:reserva_id>/', views.checkout, name='checkout'),

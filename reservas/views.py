@@ -25,6 +25,16 @@ def reservas(request):
     return render(request, 'reserva/reservas.html', {'reservas': reservas})
 
 @login_required
+def reservas_canceladas(request):
+    reservas = Reserva.objects.filter(status_reserva__in=[StatusReserva.CANCELADA()]).order_by('-data_reserva_criada')
+    return render(request, 'reserva/reservas.html', {'reservas': reservas})
+
+@login_required
+def reservas_finalizadas(request):
+    reservas = Reserva.objects.filter(status_reserva__in=[StatusReserva.FINALIZADA()]).order_by('-data_reserva_criada')
+    return render(request, 'reserva/reservas.html', {'reservas': reservas})
+
+@login_required
 def reserva_inicial(request):
             
     if request.method == 'POST':
@@ -185,7 +195,7 @@ def cancelar_reserva(request, reserva_id):
         messages.info(request, 'Esta reserva já está cancelada, finalizada ou em andamento.')
     else:
         reserva.status_reserva = StatusReserva.CANCELADA()
-        reserva.data_cancelamento = now()
+        reserva.data_cancelamento = timezone.now()
         reserva.save()
         messages.success(request, f'Reserva #{reserva.id} cancelada com sucesso.')
 

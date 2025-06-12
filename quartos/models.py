@@ -73,6 +73,6 @@ class TarifaTipoQuarto(models.Model):
     valor_diaria = models.FloatField(default=0)
 
     def __str__(self):
-        return f"{self.nome_tarifa_tipo_quarto} - {self.valor_diaria}/dia"
+        return f"{self.nome_tarifa_tipo_quarto} - R${self.valor_diaria}/dia"
     
     
