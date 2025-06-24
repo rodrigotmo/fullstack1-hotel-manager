@@ -242,3 +242,34 @@ def checkout(request, reserva_id):
     messages.success(request, f'Checkout realizado com sucesso para a reserva #{reserva.id}.')
     
     return redirect('reservas')
+
+@login_required
+def relatorios_reservas(request):
+    if not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    return render(request, 'reserva/relatorios.html')
+
+@login_required
+def relatorio_reservas_ativas(request):
+    if not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    messages.warning(request, f'EM DESENVOLVIMENTO')
+    return render(request, 'reserva/relatorios.html')
+
+@login_required
+def relatorio_reservas_canceladas(request):
+    if not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    messages.warning(request, f'EM DESENVOLVIMENTO')
+    return render(request, 'reserva/relatorios.html')
+
+@login_required
+def relatorio_reservas_finalizadas(request):
+    if not request.user.is_staff:
+        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
+        return redirect('home')
+    messages.warning(request, f'EM DESENVOLVIMENTO')
+    return render(request, 'reserva/relatorios.html')

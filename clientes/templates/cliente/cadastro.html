@@ -8,8 +8,9 @@
             action="{% if cliente %}{% url 'editar_cliente' cliente.id %}{% else %}{% url 'cadastrar_cliente' %}{% endif %}">
             {% csrf_token %}
 
-            {% if request.GET.reserva %}
-            <input type="hidden" name="reserva" value="true">
+
+            {% if request.GET.callback %}
+            <input type="hidden" name="callback" value="{{ request.GET.callback }}">
             {% endif %}
 
             <h1 class="text-center mb-4">

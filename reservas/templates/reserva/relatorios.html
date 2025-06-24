@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h1 class="text-center my-4">Relatórios de Reservas</h1>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <div class="d-grid gap-3">
+        <a href="{% url 'relatorio_reservas_ativas' %}" class="btn btn-success btn-lg">Relatório de Reservas Ativas</a>
+        <a href="{% url 'relatorio_reservas_canceladas' %}" class="btn btn-danger btn-lg">Relatório de Reservas Canceladas</a>
+        <a href="{% url 'relatorio_reservas_finalizadas' %}" class="btn btn-info btn-lg">Relatório de Reservas Finalizadas</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
