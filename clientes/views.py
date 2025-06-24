@@ -28,12 +28,14 @@ def ordenar_clientes(request, campo):
 
 @login_required
 def cadastrar_cliente(request):
-    reserva_flag = (request.GET.get('reserva') == 'true' or request.POST.get('reserva') == 'true')
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
             if Cliente.objects.filter(documento=form.cleaned_data['documento']).exists():
                 messages.error(request, 'Cliente já cadastrado.')
+                if request.GET.get('callback') or request.POST.get('callback'):
+                    callback = request.GET.get('callback') or request.POST.get('callback')
+                    return redirect(callback)
                 return redirect('clientes')
 
             cliente = Cliente(
@@ -45,10 +47,11 @@ def cadastrar_cliente(request):
             cliente.save()
             messages.success(request, 'Cliente cadastrado com sucesso.')
             
-            if reserva_flag:
-                return redirect(reverse('reserva_inicial') + '?' + urlencode({'cliente_id': cliente.id}))
-            else:
-                return redirect('clientes')
+            if request.GET.get('callback') or request.POST.get('callback'):
+                callback = request.GET.get('callback') or request.POST.get('callback')
+                return redirect(reverse(callback) + '?' + urlencode({'cliente_id': cliente.id}))
+            
+            return redirect('clientes')
             
     else:
         form = ClienteForm()
@@ -60,7 +63,7 @@ def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
 
     if request.method == 'POST':
-        form = ClienteForm(request.POST, instance=cliente)
+        form = ClienteForm(request.POST, instance=cliente)  
         if form.is_valid():
             documento = form.cleaned_data['documento']
             if Cliente.objects.exclude(id=id).filter(documento=documento).exists():
@@ -73,6 +76,9 @@ def editar_cliente(request, id):
             cliente.endereco = form.cleaned_data['endereco']
             cliente.save()
             messages.success(request, 'Cliente atualizado com sucesso!')
+            if request.GET.get('callback') or request.POST.get('callback'):
+                callback = request.GET.get('callback') or request.POST.get('callback')
+                return redirect(callback)
             return redirect('clientes')
     else:
         form = ClienteForm(instance=cliente)

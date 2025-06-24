@@ -37,7 +37,7 @@
             {% for reserva in reservas %}
             <tr>
               <td>{{ reserva.id }}</td>
-              <td>{{ reserva.cliente }}</td>
+              <td><a href="{% url 'editar_cliente' reserva.cliente_id%}?callback=reservas">{{ reserva.cliente }}</a></td>
               <td>{{ reserva.quarto }}</td>
               <td>
                 {% if reserva.status_reserva.nome_status_reserva == 'Cancelada' %}

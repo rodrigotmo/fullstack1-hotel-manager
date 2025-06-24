@@ -57,7 +57,7 @@
                     <div class="dropdown-menu" aria-labelledby="drop-reservas">
                         <a class="dropdown-item" href={%url "reserva_inicial" %}>Reservar</a>
                         <a class="dropdown-item" href={%url "reservas" %}>Ver reservas</a>
-                        <a class="dropdown-item" href="#">Relatórios</a>
+                        <a class="dropdown-item" href={%url "relatorios_reservas" %}>Relatórios</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -79,12 +79,12 @@
             alert.style.display = 'block';
             setTimeout(function () {
                 alert.classList.add('fade-out');
-            }, 3000);
+            }, 4000);
 
 
             setTimeout(function () {
                 alert.style.display = 'none';
-            }, 4000);
+            }, 5000);
         }
 
         // Chama a função para exibir o alerta
