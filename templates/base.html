@@ -55,9 +55,19 @@
                         Reservas
                     </a>
                     <div class="dropdown-menu" aria-labelledby="drop-reservas">
-                        <a class="dropdown-item" href={%url "reserva_inicial" %}>Reservar</a>
-                        <a class="dropdown-item" href={%url "reservas" %}>Ver reservas</a>
-                        <a class="dropdown-item" href={%url "relatorios_reservas" %}>Relatórios</a>
+                        <a class="dropdown-item" href="{% url 'reserva_inicial' %}">Reservar</a>
+                        <a class="dropdown-item" href="{% url 'reservas' %}">Ver reservas</a>
+                        <div class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Relatórios</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'relatorios' 'Reservada' %}">Reservas Ativas</a>
+                                </li>
+                                <li><a class="dropdown-item" href="{% url 'relatorios' 'Cancelada' %}">Reservas
+                                        Canceladas</a></li>
+                                <li><a class="dropdown-item" href="{% url 'relatorios' 'Finalizada' %}">Reservas
+                                        Finalizadas</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -162,5 +172,21 @@
     .alert-float li.success {
         background-color: #d4edda;
         color: #155724;
+    }
+
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu>.dropdown-menu {
+        top: 0;
+        left: 100%;
+        margin-top: -6px;
+        display: none;
+        position: absolute;
+    }
+
+    .dropdown-submenu:hover>.dropdown-menu {
+        display: block;
     }
 </style>

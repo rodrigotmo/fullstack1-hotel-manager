@@ -15,8 +15,5 @@ urlpatterns = [
     path('cadastro/limpar/', views.limpar_sessao_reserva, name='limpar_sessao_reserva'),
     path('cancelar/<int:reserva_id>/', views.cancelar_reserva, name='cancelar_reserva'),
     
-    path('relatorios/', views.relatorios_reservas, name='relatorios_reservas'),
-    path('relatorios/ativas', views.relatorio_reservas_ativas, name='relatorio_reservas_ativas'),
-    path('relatorios/finalizadas', views.relatorio_reservas_finalizadas, name='relatorio_reservas_finalizadas'),
-    path('relatorios/canceladas', views.relatorio_reservas_canceladas, name='relatorio_reservas_canceladas'),
-]
+    path('relatorios/<str:status>/', views.relatorios_reservas, name='relatorios'),
+    ]

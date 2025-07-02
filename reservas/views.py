@@ -244,32 +244,22 @@ def checkout(request, reserva_id):
     return redirect('reservas')
 
 @login_required
-def relatorios_reservas(request):
+def relatorios_reservas(request, status):
     if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
-    return render(request, 'reserva/relatorios.html')
-
-@login_required
-def relatorio_reservas_ativas(request):
-    if not request.user.is_staff:
-        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
-        return redirect('home')
-    messages.warning(request, f'EM DESENVOLVIMENTO')
-    return render(request, 'reserva/relatorios.html')
-
-@login_required
-def relatorio_reservas_canceladas(request):
-    if not request.user.is_staff:
-        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
-        return redirect('home')
-    messages.warning(request, f'EM DESENVOLVIMENTO')
-    return render(request, 'reserva/relatorios.html')
-
-@login_required
-def relatorio_reservas_finalizadas(request):
-    if not request.user.is_staff:
-        messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
-        return redirect('home')
-    messages.warning(request, f'EM DESENVOLVIMENTO')
-    return render(request, 'reserva/relatorios.html')
+    
+    reservas = Reserva.objects.filter(status_reserva__nome_status_reserva=status).order_by('-data_reserva_criada')
+    
+    if not reservas:
+        messages.info(request, 'Nenhuma reserva encontrada para o status selecionado.')
+    
+    if status == StatusReserva.RESERVADA().nome_status_reserva:
+        nome_relatorio = 'Relatório de Reservas Ativas'
+    elif status == StatusReserva.EM_ANDAMENTO().nome_status_reserva:
+        nome_relatorio = 'Relatório de Reservas em Andamento'
+    elif status == StatusReserva.CANCELADA().nome_status_reserva:
+        nome_relatorio = 'Relatório de Reservas Canceladas' 
+    elif status == StatusReserva.FINALIZADA().nome_status_reserva:
+        nome_relatorio = 'Relatório de Reservas Finalizadas'
+    return render(request, 'reserva/relatorios/relatorios.html', {'reservas': reservas, 'nome_relatorio': nome_relatorio})
