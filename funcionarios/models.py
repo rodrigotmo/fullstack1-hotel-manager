@@ -17,7 +17,7 @@ class FuncionarioManager(BaseUserManager):
             is_staff=is_staff,
             **extra_fields
         )
-        funcionario.set_password(password)  # Criptografa a senha
+        funcionario.set_password(password)
         funcionario.save(using=self._db)
         return funcionario
 
