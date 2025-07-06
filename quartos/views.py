@@ -43,7 +43,7 @@ def cadastrar_quarto(request):
         return redirect('home')
 
     if request.method == 'POST':
-        form = QuartoForm(request.POST)
+        form = QuartoForm(request.POST, request.FILES)
         if form.is_valid():
             numero = form.cleaned_data['numero']
             if Quarto.objects.filter(numero=numero).exists():
@@ -66,7 +66,7 @@ def editar_quarto(request, id):
 
     quarto = get_object_or_404(Quarto, id=id)
     if request.method == 'POST':
-        form = QuartoForm(request.POST, instance=quarto)
+        form = QuartoForm(request.POST, request.FILES, instance=quarto)
         if form.is_valid():
             numero = form.cleaned_data['numero']
             if Quarto.objects.exclude(id=id).filter(numero=numero).exists():
@@ -95,7 +95,7 @@ def bloquear_liberar_quarto(request, id):
     messages.success(request, 'Status do quarto alterado com sucesso.')
     return redirect('quartos')
         
-@login_required        
+@login_required  
 def remover_quarto(request,id):
     if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
