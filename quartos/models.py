@@ -1,5 +1,6 @@
 from django.db import models
 from funcionarios.models import Funcionario
+from stdimage.models import StdImageField
 
 # Create your models here.
 
@@ -47,6 +48,13 @@ class Quarto(models.Model):
     capacidade = models.IntegerField()
     status_quarto = models.ForeignKey(StatusQuarto, on_delete=models.RESTRICT)
     reserva_liberada = models.BooleanField(default=True)
+    foto = StdImageField(
+        upload_to='fotos/quartos',
+        variations={'thumb': (150, 150), 'medium': (300, 300)},
+        blank=True,
+        null=True
+    )
+
 
     def __str__(self):
         return f"Quarto {self.numero} - {self.tipo_quarto.nome_tipo_quarto}"

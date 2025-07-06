@@ -20,7 +20,7 @@ class TipoQuartoForm(forms.ModelForm):
 class QuartoForm(forms.ModelForm):
     class Meta:
         model = Quarto
-        fields = ['numero', 'capacidade', 'tipo_quarto']
+        fields = ['numero', 'capacidade', 'tipo_quarto', 'foto']
         widgets = {
             'numero': forms.TextInput(attrs={'class': 'form-control'}),
             'capacidade': forms.NumberInput(attrs={'class': 'form-control'}),
