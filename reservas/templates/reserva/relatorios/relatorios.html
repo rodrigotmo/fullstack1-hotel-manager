@@ -3,6 +3,25 @@
 <div class="container mt-5">
   <h1 class="text-center my-4">{{ nome_relatorio }}</h1>
 
+<div class="row justify-content-center mb-4">
+  <div class="col-md-8">
+    <form method="get" action="{% url 'relatorios' status %}" class="form-inline">
+      <div class="mb-2">
+        <label class="form-label fw-bold">
+          {{ nome_campo_data }}
+        </label>
+      </div>
+      <div class="input-group mb-3">
+        <input type="date" name="data_inicio" class="form-control datepicker" placeholder="Data de Início"
+          value="{{ data_inicio|default_if_none:'' }}">
+        <input type="date" name="data_fim" class="form-control datepicker" placeholder="Data de Fim"
+          value="{{ data_fim|default_if_none:'' }}">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
   <div class="row justify-content-center">
     <div class="col-md-13 text-center">
       <div class="d-grid gap-3">
