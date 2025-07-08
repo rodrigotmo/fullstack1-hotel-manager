@@ -248,18 +248,66 @@ def relatorios_reservas(request, status):
     if not request.user.is_staff:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')
         return redirect('home')
-    
-    reservas = Reserva.objects.filter(status_reserva__nome_status_reserva=status).order_by('-data_reserva_criada')
-    
+    status_map = {
+        StatusReserva.RESERVADA().nome_status_reserva: {
+            'data_field': 'data_reserva_criada',
+            'order_by': '-data_reserva_criada',
+            'titulo': 'Relatório de Reservas Ativas',
+            'nome_campo_data': 'Data de Criação da Reserva'
+        },
+        StatusReserva.EM_ANDAMENTO().nome_status_reserva: {
+            'data_field': 'data_check_in',
+            'order_by': '-data_check_in',
+            'titulo': 'Relatório de Reservas em Andamento',
+            'nome_campo_data': 'Data de Check-in'
+        },
+        StatusReserva.CANCELADA().nome_status_reserva: {
+            'data_field': 'data_cancelamento',
+            'order_by': '-data_cancelamento',
+            'titulo': 'Relatório de Reservas Canceladas',
+            'nome_campo_data': 'Data de Cancelamento'
+        },
+        StatusReserva.FINALIZADA().nome_status_reserva: {
+            'data_field': 'data_check_out',
+            'order_by': '-data_check_out',
+            'titulo': 'Relatório de Reservas Finalizadas',
+            'nome_campo_data': 'Data de Check-out'
+        },
+    }
+
+    if status not in status_map:
+        messages.error(request, 'Status de reserva inválido.')
+        return redirect('home')
+
+    info = status_map[status]
+    filtro = {'status_reserva__nome_status_reserva': status}
+    data_field = info['data_field']
+    ordenacao = info['order_by']
+    nome_relatorio = info['titulo']
+    nome_campo_data = info['nome_campo_data']
+
+    data_inicio = request.GET.get('data_inicio')
+    data_fim = request.GET.get('data_fim')
+
+    if data_inicio and data_fim:
+        try:
+            data_inicio_formatada = datetime.strptime(data_inicio, '%Y-%m-%d').date()
+            data_fim_formatada = datetime.strptime(data_fim, '%Y-%m-%d').date()
+            filtro[f"{data_field}__range"] = (data_inicio_formatada, data_fim_formatada)
+        except ValueError:
+            messages.error(request, 'Formato de data inválido. Use o formato YYYY-MM-DD.')
+            return redirect(request.path)
+
+    reservas = Reserva.objects.filter(**filtro).order_by(ordenacao)
+
     if not reservas:
-        messages.info(request, 'Nenhuma reserva encontrada para o status selecionado.')
-    
-    if status == StatusReserva.RESERVADA().nome_status_reserva:
-        nome_relatorio = 'Relatório de Reservas Ativas'
-    elif status == StatusReserva.EM_ANDAMENTO().nome_status_reserva:
-        nome_relatorio = 'Relatório de Reservas em Andamento'
-    elif status == StatusReserva.CANCELADA().nome_status_reserva:
-        nome_relatorio = 'Relatório de Reservas Canceladas' 
-    elif status == StatusReserva.FINALIZADA().nome_status_reserva:
-        nome_relatorio = 'Relatório de Reservas Finalizadas'
-    return render(request, 'reserva/relatorios/relatorios.html', {'reservas': reservas, 'nome_relatorio': nome_relatorio})
+        messages.info(request, 'Nenhuma reserva encontrada para os filtros aplicados.')
+
+    return render(request, 'reserva/relatorios/relatorios.html', {
+        'reservas': reservas,
+        'nome_relatorio': nome_relatorio,
+        'status': status,
+        'nome_campo_data': nome_campo_data,
+        'data_inicio': data_inicio,
+        'data_fim': data_fim,
+    })

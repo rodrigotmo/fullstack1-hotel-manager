@@ -3,12 +3,17 @@
 {% block content %}
 <div class="container mt-5">
     <div class="card shadow-lg p-4" style="max-width: 500px; margin: 0 auto;">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <h1 class="text-center mb-4">
                 {% if quarto %}Editar Quarto{% else %}Cadastrar Quarto{% endif %}
             </h1>
-
+            {% if quarto.foto %}
+            <div class="text-center mb-4">
+                <img src="{{ quarto.foto.medium.url }}" alt="Foto do Quarto" class="img-thumbnail"
+                    style="max-width: 300px;">
+            </div>
+            {% endif %}
             {{ form.as_p }}
 
             <div class="d-grid gap-2">
