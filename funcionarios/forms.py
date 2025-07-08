@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Funcionario  # ou use get_user_model() se for customizado
+from .models import Funcionario
 
 class FuncionarioForm(forms.ModelForm):
     senha = forms.CharField(

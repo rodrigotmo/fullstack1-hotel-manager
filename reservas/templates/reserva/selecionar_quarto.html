@@ -36,7 +36,7 @@
                         <td>{{ item.tarifa.valor_diaria|mul:qtd_dias|floatformat:2 }}</td>
                         <td>
                             <button type="submit" name="quarto_id" value="{{ item.quarto.id }}"
-                                class="btn btn-success btn-sm">
+                                class="btn btn-select btn-sm">
                                 Selecionar
                             </button>
                         </td>
@@ -49,8 +49,19 @@
                 </tbody>
             </table>
         </form>
-        <a href="{% url 'reserva_inicial' %}" class="btn btn-secondary mt-3">Voltar</a>
+        <a href="{% url 'reserva_inicial' %}" class="btn btn-back mt-3">Voltar</a>
     </div>
 
 </div>
+
+<style>
+    .btn-select {
+        color: white;
+        background-color: #ed7c3b;
+    }
+    .btn-back {
+        color: white;
+        background-color: #5b80a4;
+    }
+</style>
 {% endblock %}

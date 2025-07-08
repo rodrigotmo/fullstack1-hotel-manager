@@ -13,7 +13,7 @@
                 {{ form.cliente }}
                 {{ form.cliente.errors }}
                 <div class="form-text">
-                    <a href="{% url 'cadastrar_cliente' %}?callback=reserva_inicial">Cadastrar novo cliente</a>
+                    <a href="{% url 'cadastrar_cliente' %}?callback=reserva_inicial" class="btn btn-new">Cadastrar novo cliente</a>
                 </div>
             </div>
 
@@ -29,11 +29,22 @@
                 {{ form.data_reserva_previsao_fim.errors }}
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Selecionar Quarto</button>
+            <button type="submit" class="btn btn-add w-100">Selecionar Quarto</button>
 
             <a href="{% url 'limpar_sessao_reserva' %}" class="btn btn-danger w-100 mt-2">Limpar Dados da Reserva</a>
 
         </form>
     </div>
 </div>
+<style>
+    .btn-add {
+        color: white;
+        background-color: #ed7c3b;
+        margin-top: 50px;
+    }
+    .btn-new {
+        color: white;
+        background-color: #ed7c3b;
+    }
+</style>
 {% endblock %}

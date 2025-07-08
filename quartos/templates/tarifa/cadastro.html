@@ -12,11 +12,20 @@
             {{ form.as_p }}
 
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-add">
                     {% if tarifa %}Salvar Alterações{% else %}Cadastrar{% endif %}
                 </button>
             </div>
         </form>
     </div>
 </div>
+<style>
+    .d-grid {
+        margin-top: 50px;
+    }
+    .btn-add {
+        color: white;
+        background-color: #ed7c3b;
+    }
+</style>
 {% endblock %}
