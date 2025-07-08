@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login</title>
   <link rel="stylesheet" href="{% static 'css/bootstrap_5_0_2.min.css'%}">
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
 </head>
 
 <body class="text-center">
@@ -36,6 +37,7 @@
           <div class="col-xl-5 col-md-8">
             <form class="bg-white rounded shadow-5-strong p-5" action="{% url 'login' %}" method="post">
               {% csrf_token %}
+              <img src="/static/img/logo.png" class="hotel-logo"/>
               <h2 class="text-uppercase text-center mb-5">gerenciamento hotel</h2>
             
               {{ form.non_field_errors }}
@@ -52,7 +54,7 @@
                 {{ form.senha.errors }}
               </div>
             
-              <button type="submit" class="btn btn-primary btn-block form-control">Login</button>
+              <button type="submit" class="btn btn-block form-control btn-login">Login</button>
             </form>
             
           </div>
@@ -90,7 +92,7 @@
   }
 
   #intro {
-    background-image: url({%static 'img/city.jpg'%});
+    background-image: url({%static 'img/california.webp'%});
     background-size: cover;
     background-repeat: no-repeat;
 
@@ -102,5 +104,30 @@
 
   .navbar .nav-link {
     color: #fff !important;
+  }
+
+  .hotel-logo {
+    max-width: 200px;
+    vertical-align: bottom;
+    margin-bottom: 40px;
+  }
+
+  label {
+    margin-bottom: 10px;
+  }
+
+  .btn-login {
+    color: white;
+    background-color: #ed7c3b;
+    margin-top: 20px;
+  }
+
+  input.form-control,
+  select,
+  input.btn,
+  button.btn,
+  a.btn,
+  .custom-table a.btn {
+      border-radius: 30px !important;
   }
 </style>

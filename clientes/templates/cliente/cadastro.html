@@ -43,11 +43,20 @@
             </div>
 
             <div class="d-grid gap-2">
-                <input type="submit" class="btn btn-primary"
+                <input type="submit" class="btn btn-add"
                     value="{% if cliente %}Salvar Alterações{% else %}Cadastrar{% endif %}">
             </div>
         </form>
 
     </div>
 </div>
+<style>
+    .d-grid {
+        margin-top: 50px;
+    }
+    .btn-add {
+        color: white;
+        background-color: #ed7c3b;
+    }
+</style>
 {% endblock content %}

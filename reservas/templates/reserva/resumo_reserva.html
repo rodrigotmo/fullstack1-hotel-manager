@@ -16,10 +16,20 @@
 
         <form method="post" class="d-flex gap-2">
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary flex-grow-1">Confirmar Reserva</button>
-            <a href="{% url 'selecionar_quarto' %}" class="btn btn-secondary flex-grow-1">Voltar para Seleção</a>
+            <button type="submit" class="btn btn-select flex-grow-1">Confirmar Reserva</button>
+            <a href="{% url 'selecionar_quarto' %}" class="btn btn-back flex-grow-1">Voltar para Seleção</a>
             <a href="{% url 'reserva_inicial' %}" class="btn btn-danger flex-grow-1">Cancelar</a>
         </form>
     </div>
 </div>
+<style>
+    .btn-select {
+        color: white;
+        background-color: #ed7c3b;
+    }
+    .btn-back {
+        color: white;
+        background-color: #5b80a4;
+    }
+</style>
 {% endblock %}
