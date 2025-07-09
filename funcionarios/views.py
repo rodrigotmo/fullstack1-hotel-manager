@@ -4,6 +4,9 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import FuncionarioForm
 from django.contrib.auth.decorators import login_required
+from django.db.models.functions import Lower
+from django.db.models import CharField
+
 
 @login_required
 def funcionarios(request):
@@ -26,7 +29,15 @@ def ordenar_funcionarios(request, campo):
             funcionarios = Funcionario.objects.filter(nome__icontains=query)
         else:
             funcionarios = Funcionario.objects.all()
-        funcionarios = funcionarios.order_by(campo)
+        try:
+            field = Funcionario._meta.get_field(campo)
+            if isinstance(field, CharField):
+                funcionarios = funcionarios.annotate(campo_lower=Lower(campo)).order_by('campo_lower')
+            else:
+                funcionarios = funcionarios.order_by(campo)
+        except Exception as e:
+            messages.error(request, f'O campo "{campo}" não é válido para ordenação.')
+            return redirect('funcionarios')
         return render(request, 'funcionario/funcionarios.html', {'funcionarios': funcionarios, 'query': query})
     else:
         messages.error(request, 'Você precisa estar logado com um usuário administrador para acessar esta página.')

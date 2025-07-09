@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import ClienteForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.db.models.functions import Lower
+from django.db.models import CharField
 
 @login_required
 def clientes(request):
@@ -23,7 +25,16 @@ def ordenar_clientes(request, campo):
         clientes = Cliente.objects.filter(nome__icontains=query)
     else:
         clientes = Cliente.objects.all()
-    clientes = clientes.order_by(campo)
+        
+    try:
+        field = Cliente._meta.get_field(campo)
+        if isinstance(field, CharField):
+            clientes = clientes.annotate(campo_lower=Lower(campo)).order_by('campo_lower')
+        else:
+            clientes = clientes.order_by(campo)
+    except Exception as e:
+        messages.error(request, f'O campo "{campo}" não é válido para ordenação.')
+        return redirect('clientes')
     return render(request, 'cliente/clientes.html', {'clientes': clientes, 'query': query})
 
 @login_required

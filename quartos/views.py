@@ -6,6 +6,8 @@ from django.db.models import Q
 from django.utils.timezone import now
 from .forms import TarifaTipoQuartoForm, TipoQuartoForm, QuartoForm, OcorrenciaForm
 from django.contrib.auth.decorators import login_required
+from django.db.models.functions import Lower
+from django.db.models import CharField
 
 # Create your views here.
 
@@ -30,7 +32,15 @@ def ordenar_quartos(request, campo):
             quartos = Quarto.objects.exclude(status_quarto=StatusQuarto.REMOVIDO()).filter(numero__icontains=query)
         else:
             quartos = Quarto.objects.exclude(status_quarto=StatusQuarto.REMOVIDO()).all()
-        quartos = quartos.order_by(campo)    
+        try:
+            field = Quarto._meta.get_field(campo)
+            if isinstance(field, CharField):
+                quartos = quartos.annotate(campo_lower=Lower(campo)).order_by('campo_lower')
+            else:
+                quartos = quartos.order_by(campo)
+        except Exception as e:
+            messages.error(request, f'O campo "{campo}" não é válido para ordenação.')
+            return redirect('quartos')   
         return render(request, 'quarto/quartos.html', {'quartos': quartos, 'query': query})
     else:
         messages.error(request, 'Você precisa estar logado como administrador para acessar esta página.')
