@@ -100,10 +100,10 @@ def selecionar_quarto(request):
     quartos_com_tarifa = []
     for quarto in quartos_disponiveis:
         tarifa = TarifaTipoQuarto.objects.filter(
-            tipo_quarto=quarto.tipo_quarto,
-            data_inicio_vigencia__lte=data_inicio,
-            data_fim_vigencia__gte=data_fim
-        ).first()
+                tipo_quarto=quarto.tipo_quarto,
+                data_inicio_vigencia__lte=data_fim,
+                data_fim_vigencia__gte=data_inicio
+            ).order_by('data_inicio_vigencia').first()
         if tarifa:
             quartos_com_tarifa.append({
                 'quarto': quarto,

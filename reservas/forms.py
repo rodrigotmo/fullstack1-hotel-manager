@@ -18,7 +18,7 @@ class ReservaInicialForm(forms.Form):
         inicio = cleaned_data.get('data_reserva_previsao_inicio')
         fim = cleaned_data.get('data_reserva_previsao_fim')
 
-        if inicio and fim and inicio > fim:
+        if inicio and fim and inicio >= fim:
             raise forms.ValidationError("A data de início deve ser anterior à data de fim.")
 
         return cleaned_data
